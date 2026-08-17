@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>W2W - Word2Word (Secure Arcade Edition)</title>
-  <!-- ดึงฟอนต์แห่งอนาคต Rajdhani มาจาก Google -->
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,7 +20,90 @@
       overflow: hidden; 
     }
     
-    /* ลายน้ำด้านหลังสลับแสดง W2W กับ Streak */
+    /* --- หน้าแรกสุด W2W Art Style --- */
+    #start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0d0f12;
+      z-index: 99998;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
+    .start-title {
+      font-size: 6rem;
+      font-weight: 700;
+      letter-spacing: 8px;
+      color: #4ade80;
+      text-shadow: 0 0 30px rgba(74, 222, 128, 0.4);
+      text-transform: lowercase;
+    }
+    #initial-btn {
+      background: transparent;
+      color: #e2e8f0;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      padding: 12px 35px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 4px;
+      transition: all 0.2s ease;
+    }
+    #initial-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: #4ade80;
+      color: #4ade80;
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+    }
+
+    /* Jumpscare Overlay */
+    #jumpscare-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: black;
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+    }
+    #scare-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* ปุ่มหนีเมาส์ */
+    #escape-btn {
+      display: none;
+      position: absolute;
+      background: #ff4757;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 8px;
+      z-index: 100000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 2px;
+      transition: top 0.15s ease-out, left 0.15s ease-out;
+    }
+    #escape-btn:hover {
+      background: #ff6b81;
+    }
+
     .watermark-bg {
       position: absolute;
       top: 50%;
@@ -38,7 +120,6 @@
       transition: opacity 0.5s ease-in-out;
     }
 
-    /* หัวใจด้านบน */
     .hud { 
       position: absolute; 
       top: 25px; 
@@ -48,7 +129,6 @@
       font-weight: 600;
     }
 
-    /* ปุ่มรูปถ้วยรางวัลมุมขวาบน */
     .trophy-btn {
       position: absolute;
       top: 20px;
@@ -78,7 +158,6 @@
       max-width: 600px;
     }
 
-    /* ข้อความสถานะเกม */
     .history { 
       font-size: 18px; 
       color: #a0aec0; 
@@ -92,7 +171,6 @@
       text-shadow: 0 0 10px rgba(255, 77, 77, 0.4); 
     }
 
-    /* UI ช่องพิมพ์ตรงกลางจอแบบรวมเป็นบรรทัดเดียว */
     .arcade-input-screen {
       font-size: 4rem;
       font-weight: 700;
@@ -106,7 +184,6 @@
       text-transform: lowercase;
     }
     
-    /* ขีดกระพริบเปลี่ยนเป็นสีขาว */
     .cursor {
       display: inline-block;
       width: 12px;
@@ -121,7 +198,6 @@
       50% { opacity: 0; }
     }
 
-    /* Minimal Streak ด้านล่างช่องพิมพ์ */
     .streak-minimal {
       font-size: 1.1rem;
       letter-spacing: 2px;
@@ -151,7 +227,6 @@
       text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
     }
 
-    /* Leaderboard ด้านล่างสุดแบบซ่อนค่าเริ่มต้น */
     .leaderboard-box {
       margin-top: 10px;
       font-size: 0.9rem;
@@ -160,7 +235,7 @@
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding-top: 10px;
       width: 80%;
-      display: none; /* ซ่อนไว้ก่อนตามคำขอ */
+      display: none;
     }
     .leaderboard-title {
       font-weight: 600;
@@ -181,45 +256,47 @@
 </head>
 <body>
 
-  <!-- ลายน้ำด้านหลังสลับ W2W กับ Streak -->
+  <!-- หน้าแรกสุด W2W Art Style & Play Button -->
+  <div id="start-screen">
+    <div class="start-title">w2w</div>
+    <button id="initial-btn">PLAY</button>
+  </div>
+
+  <!-- Jumpscare Overlay -->
+  <div id="jumpscare-container">
+    <video id="scare-video" src="scare.mp4"></video>
+    <button id="escape-btn">PLAY</button>
+  </div>
+
   <div class="watermark-bg" id="watermark">W2W</div>
 
-  <!-- หัวใจด้านบน -->
   <div class="hud">
     <span id="lives">❤️❤️❤️❤️❤️</span>
   </div>
 
-  <!-- ปุ่มรูปถ้วยรางวัลสำหรับเปิด/ปิด Leaderboard -->
   <button class="trophy-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
 
   <div class="game-container">
-    
-    <!-- ข้อความสถานะเกม -->
     <div class="history" id="status-msg">Loading Dictionary...</div>
 
-    <!-- ช่องพิมพ์ Arcade รวมตัวอักษรบังคับไว้บรรทัดเดียวกัน -->
     <div class="arcade-input-screen" id="arcade-screen">
       <span id="typed-text"></span><span class="cursor"></span>
     </div>
     
-    <!-- Minimal Streak & Best Streak ด้านล่างช่องพิมพ์ -->
     <div class="streak-minimal">
       <div class="streak-item">STREAK <span class="streak-num" id="streak-counter">0</span></div>
       <span>|</span>
       <div class="streak-item">BEST <span class="best-num" id="best-counter">0</span></div>
     </div>
 
-    <!-- Leaderboard มินิมอล (ซ่อนอยู่ จะแสดงเมื่อกดปุ่ม 🏆) -->
     <div class="leaderboard-box" id="leaderboard-container">
       <div class="leaderboard-title">TOP STREAKS (LOCAL LEADERBOARD)</div>
       <div id="top-scores">1. --- (0) | 2. --- (0) | 3. --- (0)</div>
     </div>
 
-    <!-- ฟอร์มช่องพิมพ์ที่ซ่อนไว้เบื้องหลัง -->
     <form id="game-form">
-      <input type="text" id="word-input" class="hidden-input" autocomplete="off" autofocus />
+      <input type="text" id="word-input" class="hidden-input" autocomplete="off" />
     </form>
-    
   </div>
 
   <script>
@@ -237,6 +314,8 @@
       let lastSubmitTime = 0;
       const usedWords = new Set();
       let dictionary = new Set();
+      
+      let escapeCount = 0; // ตัวนับจำนวนครั้งที่ปุ่มหนีเมาส์ (จำกัดแค่ 2 ครั้ง)
 
       let leaderboard = JSON.parse(localStorage.getItem('w2w_named_leaderboard')) || [
         {name: "---", score: 0},
@@ -256,14 +335,15 @@
       const trophyBtn = document.getElementById('toggle-leaderboard');
       const leaderboardContainer = document.getElementById('leaderboard-container');
 
-      // ระบบกดปุ่ม 🏆 เพื่อเปิด/ปิดตาราง Leaderboard
+      const startScreen = document.getElementById('start-screen');
+      const initialBtn = document.getElementById('initial-btn');
+      const jumpscareContainer = document.getElementById('jumpscare-container');
+      const scareVideo = document.getElementById('scare-video');
+      const escapeBtn = document.getElementById('escape-btn');
+
       trophyBtn.addEventListener('click', () => {
-        if (leaderboardContainer.style.display === 'block') {
-          leaderboardContainer.style.display = 'none';
-        } else {
-          leaderboardContainer.style.display = 'block';
-        }
-        input.focus(); // โฟกัสกลับมาที่ช่องพิมพ์เกมเหมือนเดิม
+        leaderboardContainer.style.display = leaderboardContainer.style.display === 'block' ? 'none' : 'block';
+        input.focus();
       });
 
       updateLeaderboardDisplay();
@@ -311,19 +391,64 @@
 
       input.addEventListener('input', () => {
         let val = input.value.toLowerCase();
-        
         if (requiredPrefix !== "") {
           if (!val.startsWith(requiredPrefix)) {
             input.value = requiredPrefix + val.replace(requiredPrefix, '');
           }
         }
-        
         typedTextEl.innerText = input.value;
+      });
+
+      initialBtn.addEventListener('click', () => {
+        startScreen.style.display = 'none';
+        jumpscareContainer.style.display = 'flex';
+        scareVideo.currentTime = 0;
+        scareVideo.play().catch(err => console.log("Autoplay blocked:", err));
+
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(err => {});
+        }
       });
 
       window.addEventListener('click', () => {
         input.focus();
       });
+
+      scareVideo.addEventListener('ended', function() {
+        escapeBtn.style.display = 'block';
+        escapeBtn.style.top = "60%";
+        escapeBtn.style.left = "50%";
+        escapeBtn.style.transform = "translate(-50%, -50%)";
+      });
+
+      // ฟังก์ชันควบคุมการหนีเมาส์ (หนีแค่ 2 ครั้งเท่านั้น)
+      function moveButton() {
+        if (escapeCount < 2) {
+          escapeCount++;
+          const x = Math.random() * (window.innerWidth - escapeBtn.offsetWidth - 100);
+          const y = Math.random() * (window.innerHeight - escapeBtn.offsetHeight - 100);
+          escapeBtn.style.transform = "none";
+          escapeBtn.style.left = `${Math.max(20, x)}px`;
+          escapeBtn.style.top = `${Math.max(20, y)}px`;
+        }
+      }
+
+      escapeBtn.addEventListener('mouseover', moveButton);
+      escapeBtn.addEventListener('click', (e) => {
+        // ถ้ายังหนีไม่ครบ 2 รอบ ให้กดแล้วหนีต่อ (แต่ถ้าครบ 2 รอบแล้ว กดปุ๊บเข้าเกมทันที)
+        if (escapeCount < 2) {
+          moveButton();
+          e.stopPropagation();
+        } else {
+          startRealGame();
+        }
+      });
+
+      function startRealGame() {
+        jumpscareContainer.style.display = 'none';
+        input.focus();
+        statusEl.innerText = "System Ready. Start typing.";
+      }
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
