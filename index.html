@@ -20,7 +20,7 @@
       overflow: hidden; 
     }
     
-    /* --- หน้าแรกสุด W2W Art Style --- */
+    /* --- หน้าแรกสุด W2W Art Style (ตัวใหญ่สะใจ) --- */
     #start-screen {
       position: fixed;
       top: 0;
@@ -33,22 +33,22 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
     .start-title {
-      font-size: 6rem;
+      font-size: 8rem;
       font-weight: 700;
-      letter-spacing: 8px;
+      letter-spacing: 12px;
       color: #4ade80;
-      text-shadow: 0 0 30px rgba(74, 222, 128, 0.4);
-      text-transform: lowercase;
+      text-shadow: 0 0 40px rgba(74, 222, 128, 0.4);
+      text-transform: uppercase;
     }
     #initial-btn {
       background: transparent;
       color: #e2e8f0;
       border: 2px solid rgba(255, 255, 255, 0.15);
-      padding: 12px 35px;
-      font-size: 1.5rem;
+      padding: 14px 45px;
+      font-size: 1.6rem;
       font-weight: 600;
       cursor: pointer;
       border-radius: 8px;
@@ -62,46 +62,27 @@
       color: #4ade80;
       box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
     }
-
-    /* Jumpscare Overlay */
-    #jumpscare-container {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: black;
-      z-index: 99999;
-      justify-content: center;
-      align-items: center;
-    }
-    #scare-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
     
-    /* ปุ่มหนีเมาส์ */
+    /* ปุ่มหนีเมาส์หน้าแรก */
     #escape-btn {
       display: none;
       position: absolute;
-      background: #ff4757;
-      color: white;
+      background: #4ade80;
+      color: #0d0f12;
       border: none;
-      padding: 15px 30px;
-      font-size: 18px;
-      font-weight: bold;
+      padding: 14px 45px;
+      font-size: 1.6rem;
+      font-weight: 600;
       cursor: pointer;
       border-radius: 8px;
       z-index: 100000;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
       font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 2px;
+      letter-spacing: 4px;
       transition: top 0.15s ease-out, left 0.15s ease-out;
     }
     #escape-btn:hover {
-      background: #ff6b81;
+      background: #22c55e;
     }
 
     .watermark-bg {
@@ -181,7 +162,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      text-transform: lowercase;
+      text-transform: uppercase; /* บังคับแสดงผลเป็นพิมพ์ใหญ่ */
     }
     
     .cursor {
@@ -227,24 +208,38 @@
       text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
     }
 
+    /* Leaderboard Box แบบแนวตั้ง Top 25 */
     .leaderboard-box {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 0.9rem;
       letter-spacing: 1px;
-      color: #6c7a8c;
+      color: #94a3b8;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 10px;
-      width: 80%;
+      padding-top: 12px;
+      width: 100%;
+      max-width: 350px;
+      max-height: 220px;
+      overflow-y: auto;
       display: none;
+      background: rgba(13, 15, 18, 0.95);
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
     .leaderboard-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: #94a3b8;
-    }
-    #top-scores {
       font-weight: 700;
-      color: #e2e8f0;
+      margin-bottom: 8px;
+      color: #4ade80;
+      letter-spacing: 2px;
+    }
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .score-row:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .hidden-input {
@@ -258,13 +253,8 @@
 
   <!-- หน้าแรกสุด W2W Art Style & Play Button -->
   <div id="start-screen">
-    <div class="start-title">w2w</div>
+    <div class="start-title">W2W</div>
     <button id="initial-btn">PLAY</button>
-  </div>
-
-  <!-- Jumpscare Overlay -->
-  <div id="jumpscare-container">
-    <video id="scare-video" src="scare.mp4"></video>
     <button id="escape-btn">PLAY</button>
   </div>
 
@@ -289,9 +279,10 @@
       <div class="streak-item">BEST <span class="best-num" id="best-counter">0</span></div>
     </div>
 
+    <!-- Leaderboard แบบแนวตั้ง Top 25 -->
     <div class="leaderboard-box" id="leaderboard-container">
-      <div class="leaderboard-title">TOP STREAKS (LOCAL LEADERBOARD)</div>
-      <div id="top-scores">1. --- (0) | 2. --- (0) | 3. --- (0)</div>
+      <div class="leaderboard-title">TOP 25 LEADERBOARD</div>
+      <div id="top-scores-list"></div>
     </div>
 
     <form id="game-form">
@@ -315,13 +306,10 @@
       const usedWords = new Set();
       let dictionary = new Set();
       
-      let escapeCount = 0; // ตัวนับจำนวนครั้งที่ปุ่มหนีเมาส์ (จำกัดแค่ 2 ครั้ง)
+      let escapeCount = 0;
 
-      let leaderboard = JSON.parse(localStorage.getItem('w2w_named_leaderboard')) || [
-        {name: "---", score: 0},
-        {name: "---", score: 0},
-        {name: "---", score: 0}
-      ];
+      // โหลด Leaderboard สูงสุด 25 อันดับ
+      let leaderboard = JSON.parse(localStorage.getItem('w2w_top25_leaderboard')) || [];
       
       const form = document.getElementById('game-form');
       const input = document.getElementById('word-input');
@@ -331,14 +319,12 @@
       const statusEl = document.getElementById('status-msg');
       const streakCounterEl = document.getElementById('streak-counter');
       const bestCounterEl = document.getElementById('best-counter');
-      const topScoresEl = document.getElementById('top-scores');
+      const topScoresListEl = document.getElementById('top-scores-list');
       const trophyBtn = document.getElementById('toggle-leaderboard');
       const leaderboardContainer = document.getElementById('leaderboard-container');
 
       const startScreen = document.getElementById('start-screen');
       const initialBtn = document.getElementById('initial-btn');
-      const jumpscareContainer = document.getElementById('jumpscare-container');
-      const scareVideo = document.getElementById('scare-video');
       const escapeBtn = document.getElementById('escape-btn');
 
       trophyBtn.addEventListener('click', () => {
@@ -349,20 +335,39 @@
       updateLeaderboardDisplay();
 
       function updateLeaderboardDisplay() {
-        bestCounterEl.innerText = leaderboard[0].score;
-        topScoresEl.innerHTML = leaderboard.map((item, index) => `${index + 1}. ${item.name} (${item.score})`).join(' &nbsp;|&nbsp; ');
+        if (leaderboard.length > 0) {
+          bestCounterEl.innerText = leaderboard[0].score;
+        } else {
+          bestCounterEl.innerText = "0";
+        }
+
+        if (leaderboard.length === 0) {
+          topScoresListEl.innerHTML = '<div style="text-align:center; color: #6c7a8c; padding: 10px;">No scores yet. Play to rank!</div>';
+          return;
+        }
+
+        topScoresListEl.innerHTML = leaderboard.map((item, index) => {
+          return `<div class="score-row">
+                    <span>${index + 1}. ${escapeHtml(item.name)}</span>
+                    <span style="color: #4ade80; font-weight: 700;">${item.score}</span>
+                  </div>`;
+        }).join('');
+      }
+
+      function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       }
 
       function checkAndSaveScore(currentStreak) {
         if (currentStreak <= 0) return;
-        let playerName = prompt(`GAME OVER! Final Streak: ${currentStreak}\nEnter your name for the Leaderboard:`, "Player");
+        let playerName = prompt(`GAME OVER! Final Streak: ${currentStreak}\nEnter your name for Top 25 Leaderboard:`, "Player");
         if (!playerName || playerName.trim() === "") playerName = "Anonymous";
         
-        leaderboard.push({ name: playerName.trim().substring(0, 10), score: currentStreak });
+        leaderboard.push({ name: playerName.trim().substring(0, 12), score: currentStreak });
         leaderboard.sort((a, b) => b.score - a.score);
-        leaderboard = leaderboard.slice(0, 3);
+        leaderboard = leaderboard.slice(0, 25); // ตัดเก็บบันทึกสูงสุด 25 อันดับจริง
         
-        localStorage.setItem('w2w_named_leaderboard', JSON.stringify(leaderboard));
+        localStorage.setItem('w2w_top25_leaderboard', JSON.stringify(leaderboard));
         updateLeaderboardDisplay();
       }
 
@@ -385,25 +390,29 @@
           setTimeout(() => { statusEl.style.color = "#a0aec0"; }, 2000);
         })
         .catch(err => {
-          statusEl.innerText = "Error: Please run via Server";
+          statusEl.innerText = "Error: Dictionary not loaded";
           statusEl.className = "history error-msg";
         });
 
+      // บังคับแปลงตัวอักษรทุกตัวที่พิมพ์ให้เป็นตัวพิมพ์ใหญ่ (Uppercase) ทันที
       input.addEventListener('input', () => {
-        let val = input.value.toLowerCase();
+        let val = input.value.toUpperCase();
         if (requiredPrefix !== "") {
-          if (!val.startsWith(requiredPrefix)) {
-            input.value = requiredPrefix + val.replace(requiredPrefix, '');
+          let reqUpper = requiredPrefix.toUpperCase();
+          if (!val.startsWith(reqUpper)) {
+            input.value = reqUpper + val.replace(reqUpper, '');
+            val = input.value;
           }
         }
-        typedTextEl.innerText = input.value;
+        typedTextEl.innerText = val;
       });
 
       initialBtn.addEventListener('click', () => {
-        startScreen.style.display = 'none';
-        jumpscareContainer.style.display = 'flex';
-        scareVideo.currentTime = 0;
-        scareVideo.play().catch(err => console.log("Autoplay blocked:", err));
+        initialBtn.style.display = 'none';
+        escapeBtn.style.display = 'block';
+        escapeBtn.style.top = "60%";
+        escapeBtn.style.left = "50%";
+        escapeBtn.style.transform = "translate(-50%, -50%)";
 
         if (document.documentElement.requestFullscreen) {
           document.documentElement.requestFullscreen().catch(err => {});
@@ -414,14 +423,6 @@
         input.focus();
       });
 
-      scareVideo.addEventListener('ended', function() {
-        escapeBtn.style.display = 'block';
-        escapeBtn.style.top = "60%";
-        escapeBtn.style.left = "50%";
-        escapeBtn.style.transform = "translate(-50%, -50%)";
-      });
-
-      // ฟังก์ชันควบคุมการหนีเมาส์ (หนีแค่ 2 ครั้งเท่านั้น)
       function moveButton() {
         if (escapeCount < 2) {
           escapeCount++;
@@ -435,7 +436,6 @@
 
       escapeBtn.addEventListener('mouseover', moveButton);
       escapeBtn.addEventListener('click', (e) => {
-        // ถ้ายังหนีไม่ครบ 2 รอบ ให้กดแล้วหนีต่อ (แต่ถ้าครบ 2 รอบแล้ว กดปุ๊บเข้าเกมทันที)
         if (escapeCount < 2) {
           moveButton();
           e.stopPropagation();
@@ -445,7 +445,7 @@
       });
 
       function startRealGame() {
-        jumpscareContainer.style.display = 'none';
+        startScreen.style.display = 'none';
         input.focus();
         statusEl.innerText = "System Ready. Start typing.";
       }
@@ -461,10 +461,11 @@
         lastSubmitTime = now;
 
         const currentWord = input.value.trim().toLowerCase();
-        if (!currentWord || currentWord === requiredPrefix) return;
+        const currentWordUpper = currentWord.toUpperCase();
+        if (!currentWord || currentWord === requiredPrefix.toLowerCase()) return;
 
         if (dictionary.size > 0 && !dictionary.has(currentWord)) {
-          handleWrong(`'${currentWord.toUpperCase()}' is unknown`);
+          handleWrong(`'${currentWordUpper}' is unknown`);
           return;
         }
 
@@ -489,18 +490,18 @@
         streak++;
         streakCounterEl.innerText = streak;
 
-        if (streak > leaderboard[0].score) {
+        if (leaderboard.length === 0 || streak > leaderboard[0].score) {
           bestCounterEl.innerText = streak;
         }
 
         if (showStreakBg) watermarkEl.innerText = streak;
         
         statusEl.className = "history";
-        statusEl.innerText = `ACCEPTED: ${currentWord.toUpperCase()}`;
+        statusEl.innerText = `ACCEPTED: ${currentWordUpper}`;
         
         requiredPrefix = currentWord.slice(-1);
-        input.value = requiredPrefix;
-        typedTextEl.innerText = requiredPrefix;
+        input.value = requiredPrefix.toUpperCase();
+        typedTextEl.innerText = requiredPrefix.toUpperCase();
       });
 
       function handleWrong(msg) {
@@ -510,8 +511,8 @@
         statusEl.className = "history error-msg";
         statusEl.innerText = `${msg} [-1 Life]`;
         
-        input.value = requiredPrefix;
-        typedTextEl.innerText = requiredPrefix;
+        input.value = requiredPrefix.toUpperCase();
+        typedTextEl.innerText = requiredPrefix.toUpperCase();
 
         if (lives <= 0) {
           deathSound.currentTime = 0;
