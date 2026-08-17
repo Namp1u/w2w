@@ -101,7 +101,7 @@
     .tooth:disabled { background: rgba(10, 10, 15, 0.95) !important; box-shadow: inset 0 10px 20px rgba(0,0,0,1); border: 1px solid rgba(0,0,0,0.8); cursor: not-allowed; transform: translate(-50%, -50%) scale(0.85); }
     .tooth.bitten { background: rgba(239, 68, 68, 0.8) !important; box-shadow: 0 0 25px rgba(239, 68, 68, 0.9), inset 0 0 10px rgba(0,0,0,0.5); border-color: #ef4444 !important; transform: translate(-50%, -50%) scale(1.05); z-index: 10; }
 
-    /* --- WHITEBOARD VIEW STYLES (FULLSCREEN & LARGE) --- */
+    /* --- WHITEBOARD VIEW STYLES --- */
     #whiteboard-game-view { display: none; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; background: #0d0f12; }
     #name-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 15, 18, 0.95); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
     .modal-title { font-size: 3rem; font-weight: 700; color: #4ade80; font-family: 'Rajdhani', sans-serif; letter-spacing: 4px; }
@@ -114,8 +114,13 @@
     .wb-tool-btn, input[type="color"] { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
     .wb-tool-btn:hover, .wb-tool-btn.active { border-color: #4ade80; color: #4ade80; background: rgba(74,222,128,0.1); }
     
-    .canvas-container { position: relative; width: 96vw; height: 85vh; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 2px solid #2a2e38; margin-top: 30px; display: flex; justify-content: center; align-items: center; }
-    canvas { background: #12151c; display: block; cursor: crosshair; width: 100%; height: 100%; }
+    .grid-nav-container { display: grid; grid-template-columns: repeat(3, 20px); grid-template-rows: repeat(3, 20px); gap: 3px; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+    .grid-cell { background: rgba(255,255,255,0.2); border-radius: 3px; cursor: pointer; transition: all 0.2s; }
+    .grid-cell:hover { background: rgba(74,222,128,0.5); }
+    .grid-cell.active { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+
+    .canvas-container { position: relative; width: 96vw; height: 82vh; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 2px solid #2a2e38; margin-top: 35px; display: flex; justify-content: center; align-items: center; background: #ffffff; }
+    canvas { background: #ffffff; display: block; cursor: crosshair; width: 100%; height: 100%; }
 
     #stroke-info-popup { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(50px); background: rgba(22, 27, 34, 0.95); border: 1px solid #4ade80; color: #e2e8f0; padding: 12px 24px; border-radius: 10px; font-size: 0.95rem; letter-spacing: 1px; box-shadow: 0 5px 20px rgba(74, 222, 128, 0.3); z-index: 20; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; pointer-events: none; display: flex; gap: 20px; }
     #stroke-info-popup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -249,7 +254,19 @@
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
 
     <div class="wb-toolbar">
-      <label>Color: <input type="color" id="colorPicker" value="#4ade80"></label>
+      <div class="grid-nav-container" id="gridNavContainer">
+        <div class="grid-cell" data-x="0" data-y="0" onclick="changeGrid(0,0)"></div>
+        <div class="grid-cell" data-x="1" data-y="0" onclick="changeGrid(1,0)"></div>
+        <div class="grid-cell" data-x="2" data-y="0" onclick="changeGrid(2,0)"></div>
+        <div class="grid-cell" data-x="0" data-y="1" onclick="changeGrid(0,1)"></div>
+        <div class="grid-cell active" data-x="1" data-y="1" onclick="changeGrid(1,1)"></div>
+        <div class="grid-cell" data-x="2" data-y="1" onclick="changeGrid(2,1)"></div>
+        <div class="grid-cell" data-x="0" data-y="2" onclick="changeGrid(0,2)"></div>
+        <div class="grid-cell" data-x="1" data-y="2" onclick="changeGrid(1,2)"></div>
+        <div class="grid-cell" data-x="2" data-y="2" onclick="changeGrid(2,2)"></div>
+      </div>
+      <span id="grid-indicator" style="font-size: 0.85rem; font-weight: 700; color: #4ade80; font-family: 'Rajdhani', sans-serif;">PANEL: 2,2</span>
+      <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
       <label>Size: <input type="range" id="sizePicker" min="2" max="30" value="5"></label>
       <button class="wb-tool-btn active" id="penBtn" onclick="setMode('pen')">Pen</button>
       <button class="wb-tool-btn" id="eraserBtn" onclick="setMode('eraser')">Eraser</button>
@@ -553,7 +570,7 @@
       });
     });
 
-    // ================= WHITEBOARD LOGIC =================
+    // ================= WHITEBOARD LOGIC (FIXED LOCAL STATE & GRID) =================
     const canvas = document.getElementById('whiteboard');
     const ctx = canvas.getContext('2d');
     const colorPicker = document.getElementById('colorPicker');
@@ -565,11 +582,14 @@
     let currentMode = 'pen';
     let currentPoints = [];
     let allStrokes = [];
+    let currentGridX = 1;
+    let currentGridY = 1;
 
     const nameModal = document.getElementById('name-modal');
     const usernameInput = document.getElementById('username-input');
     const startBoardBtn = document.getElementById('start-board-btn');
     const strokeInfoPopup = document.getElementById('stroke-info-popup');
+    const gridIndicator = document.getElementById('grid-indicator');
 
     function resizeCanvas() {
       const container = canvas.parentElement;
@@ -586,12 +606,13 @@
       }
     });
 
-    startBoardBtn.addEventListener('click', () => {
+    startBoardBtn.addEventListener('click', async () => {
       let val = usernameInput.value.trim();
       if (!val) val = "ANONYMOUS";
       myName = val.substring(0, 12);
       nameModal.style.display = 'none';
       resizeCanvas();
+      await fetchStrokesFromDB();
     });
     usernameInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') startBoardBtn.click(); });
 
@@ -601,13 +622,47 @@
       document.getElementById('eraserBtn').classList.toggle('active', mode === 'eraser');
     }
 
-    const boardChannel = _supabase.channel('room-whiteboard-v3');
-    boardChannel
-      .on('broadcast', { event: 'draw_stroke' }, (payload) => {
-        allStrokes.push(payload.payload);
+    function changeGrid(x, y) {
+      currentGridX = x;
+      currentGridY = y;
+      gridIndicator.innerText = `PANEL: ${x+1},${y+1}`;
+      
+      document.querySelectorAll('.grid-cell').forEach(cell => {
+        const cx = parseInt(cell.dataset.x);
+        const cy = parseInt(cell.dataset.y);
+        cell.classList.toggle('active', cx === x && cy === y);
+      });
+
+      redrawCanvas();
+    }
+
+    async function fetchStrokesFromDB() {
+      const { data } = await _supabase.from('whiteboard_strokes').select('*');
+      if (data) {
+        allStrokes = data.map(row => ({
+          ...row.stroke_json,
+          db_id: row.id
+        }));
         redrawCanvas();
+      }
+    }
+
+    // Realtime Sync Subscription
+    const boardChannel = _supabase.channel('public:whiteboard_strokes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'whiteboard_strokes' }, payload => {
+        const newRow = payload.new;
+        const incomingStroke = {
+          ...newRow.stroke_json,
+          db_id: newRow.id
+        };
+        // ป้องกันไม่ให้วาดซ้ำถ้าเป็นเส้นที่เราวาดเองในเครื่อง
+        const exists = allStrokes.some(s => s.db_id === newRow.id);
+        if (!exists) {
+          allStrokes.push(incomingStroke);
+          redrawCanvas();
+        }
       })
-      .on('broadcast', { event: 'clear_board' }, () => {
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'whiteboard_strokes' }, () => {
         allStrokes = [];
         redrawCanvas();
       })
@@ -615,17 +670,17 @@
 
     function drawStrokeObject(stroke) {
       const pts = stroke.points;
-      if (pts.length < 2) return;
+      if (!pts || pts.length < 2) return;
 
       ctx.save();
       ctx.beginPath();
       
       if (stroke.mode === 'eraser') {
         ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = stroke.size * 2;
+        ctx.lineWidth = Number(stroke.size) * 2;
       } else {
         ctx.strokeStyle = stroke.color;
-        ctx.lineWidth = stroke.size;
+        ctx.lineWidth = Number(stroke.size);
         ctx.globalCompositeOperation = 'source-over';
       }
       
@@ -648,7 +703,9 @@
 
     function redrawCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      allStrokes.forEach(stroke => drawStrokeObject(stroke));
+      // กรองเฉพาะเส้นที่อยู่ใน Grid X และ Grid Y ปัจจุบัน
+      const currentPanelStrokes = allStrokes.filter(s => s.grid_x === currentGridX && s.grid_y === currentGridY);
+      currentPanelStrokes.forEach(stroke => drawStrokeObject(stroke));
     }
 
     canvas.addEventListener('mousedown', (e) => {
@@ -671,7 +728,9 @@
         color: colorPicker.value,
         size: sizePicker.value,
         mode: currentMode,
-        name: myName
+        name: myName,
+        grid_x: currentGridX,
+        grid_y: currentGridY
       };
       drawStrokeObject(tempStroke);
 
@@ -680,38 +739,39 @@
       ctx.fillText(myName, newX + 10, newY - 5);
     });
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener('mouseup', async () => {
       if (!drawing) return;
       drawing = false;
 
       if (currentPoints.length > 1) {
         const now = new Date();
-        const newStroke = {
+        const strokeObj = {
           points: currentPoints,
           color: colorPicker.value,
           size: sizePicker.value,
           mode: currentMode,
           name: myName,
           date: now.toLocaleDateString(),
-          time: now.toLocaleTimeString()
+          time: now.toLocaleTimeString(),
+          grid_x: currentGridX,
+          grid_y: currentGridY
         };
 
-        allStrokes.push(newStroke);
+        // บันทึกลง Supabase และนำใส่ Array local ทันทีเพื่อไม่ให้เส้นหายตอนยกมือ
+        const { data } = await _supabase.from('whiteboard_strokes').insert([{ stroke_json: strokeObj }]).select();
+        if (data && data.length > 0) {
+          strokeObj.db_id = data[0].id;
+        }
+        allStrokes.push(strokeObj);
         redrawCanvas();
-
-        boardChannel.send({
-          type: 'broadcast',
-          event: 'draw_stroke',
-          payload: newStroke
-        });
       }
       currentPoints = [];
     });
 
-    clearBtn.addEventListener('click', () => {
+    clearBtn.addEventListener('click', async () => {
+      await _supabase.from('whiteboard_strokes').delete().neq('id', 0);
       allStrokes = [];
       redrawCanvas();
-      boardChannel.send({ type: 'broadcast', event: 'clear_board' });
     });
 
     canvas.addEventListener('click', (e) => {
@@ -719,9 +779,10 @@
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
 
+      const currentPanelStrokes = allStrokes.filter(s => s.grid_x === currentGridX && s.grid_y === currentGridY);
       let foundStroke = null;
-      for (let i = allStrokes.length - 1; i >= 0; i--) {
-        const stroke = allStrokes[i];
+      for (let i = currentPanelStrokes.length - 1; i >= 0; i--) {
+        const stroke = currentPanelStrokes[i];
         for (let p of stroke.points) {
           const dist = Math.hypot(p.x - clickX, p.y - clickY);
           if (dist < Math.max(stroke.size, 8)) {
@@ -740,6 +801,8 @@
         setTimeout(() => { strokeInfoPopup.classList.remove('show'); }, 4000);
       }
     });
+
+    fetchStrokesFromDB();
   </script>
 </body>
 </html>
