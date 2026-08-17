@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>W2W Arcade Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <title>W2W Arcade Hub & NCS Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,7 +12,7 @@
     body { 
       background-color: #0d0f12; 
       color: #e0e6ed; 
-      font-family: 'Rajdhani', sans-serif;
+      font-family: 'Prompt', 'Rajdhani', sans-serif;
       height: 100vh; 
       display: flex; 
       flex-direction: column; 
@@ -22,260 +22,380 @@
       position: relative;
     }
 
-    /* --- หน้าแรก (ตามรูปที่ 2: W2W + ปุ่ม PLAY + เมนูด้านล่าง) --- */
-    #main-home-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: #0d0f12;
-      z-index: 99997;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 25px;
-    }
-    .home-title {
-      font-size: 7rem;
-      font-weight: 700;
-      letter-spacing: 10px;
-      color: #4ade80;
-      text-shadow: 0 0 35px rgba(74, 222, 128, 0.4);
-      text-transform: uppercase;
-    }
-    .home-play-btn {
-      background: transparent;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      color: #e2e8f0;
-      padding: 12px 40px;
-      font-size: 1.4rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 8px;
-      font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 4px;
-      transition: all 0.2s ease;
-    }
-    .home-play-btn:hover {
-      border-color: #4ade80;
-      color: #4ade80;
-      box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
-    }
-    .home-menu-icon-btn {
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      font-size: 2.2rem;
-      cursor: pointer;
-      transition: color 0.2s;
-      margin-top: 5px;
-    }
+    #main-home-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d0f12; z-index: 99997; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 25px; }
+    .home-title { font-size: 7rem; font-weight: 700; letter-spacing: 10px; color: #4ade80; text-shadow: 0 0 35px rgba(74, 222, 128, 0.4); text-transform: uppercase; font-family: 'Rajdhani', sans-serif; }
+    .home-play-btn { background: transparent; border: 2px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; padding: 12px 40px; font-size: 1.4rem; font-weight: 600; cursor: pointer; border-radius: 8px; letter-spacing: 4px; transition: all 0.2s ease; }
+    .home-play-btn:hover { border-color: #4ade80; color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3); }
+    .home-menu-icon-btn { background: transparent; border: none; color: #ffffff; font-size: 2.2rem; cursor: pointer; transition: color 0.2s; margin-top: 5px; }
     .home-menu-icon-btn:hover { color: #4ade80; }
 
-    /* --- หน้า HUB (ตามรูปที่ 1: หัวข้อ ALL + เลือกเกม) --- */
-    #hub-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: #0d0f12;
-      z-index: 99999;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 30px;
-    }
-    .hub-title {
-      font-size: 5rem;
-      font-weight: 700;
-      letter-spacing: 8px;
-      color: #4ade80;
-      text-shadow: 0 0 30px rgba(74, 222, 128, 0.4);
-      text-transform: uppercase;
-    }
-    .hub-menu {
-      display: flex;
-      gap: 20px;
-    }
-    .hub-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      color: #e2e8f0;
-      padding: 20px 40px;
-      font-size: 1.5rem;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 12px;
-      font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 2px;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      width: 220px;
-    }
-    .hub-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: #4ade80;
-      color: #4ade80;
-      box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
-      transform: translateY(-5px);
-    }
+    #hub-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0f1115; z-index: 99999; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 50px; }
+    .hub-title { font-size: 8rem; font-weight: 700; letter-spacing: 12px; color: #4ade80; text-shadow: 0 0 40px rgba(74, 222, 128, 0.3); text-transform: uppercase; font-family: 'Rajdhani', sans-serif; }
+    .hub-menu { display: flex; gap: 30px; }
+    .hub-card-btn { background: #181b21; border: 2px solid #2a2e38; cursor: pointer; border-radius: 12px; width: 220px; height: 120px; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
+    .hub-card-btn:hover { border-color: #4ade80; box-shadow: 0 0 20px rgba(74, 222, 128, 0.2); transform: translateY(-4px); }
+    .hub-card-w2w { font-size: 3rem; font-weight: 700; letter-spacing: 5px; color: #4ade80; text-shadow: 0 0 20px rgba(74, 222, 128, 0.4); font-family: 'Rajdhani', sans-serif; }
+    .hub-card-cat { width: 80px; height: 80px; background: url('https://cdn.phototourl.com/free/2026-08-17-6534f1b0-ff1c-472e-8c6c-ef429eadcff8.jpg') no-repeat center center; background-size: cover; border-radius: 10px; }
 
-    /* --- หน้าจอเกม W2W --- */
-    #w2w-game-view {
-      display: none;
-      width: 100%;
-      height: 100%;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #start-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background-color: #0d0f12;
-      z-index: 99998;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-    }
-    .start-title {
-      font-size: 8rem; font-weight: 700; letter-spacing: 12px;
-      color: #4ade80; text-shadow: 0 0 40px rgba(74, 222, 128, 0.4);
-      text-transform: uppercase;
-    }
-    #initial-btn, #escape-btn {
-      background: transparent; color: #e2e8f0;
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      padding: 14px 45px; font-size: 1.6rem; font-weight: 600;
-      cursor: pointer; border-radius: 8px; font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 4px; transition: all 0.2s ease;
-    }
+    #w2w-game-view { display: none; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; position: relative; }
+    #start-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d0f12; z-index: 99998; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
+    .start-title { font-size: 8rem; font-weight: 700; letter-spacing: 12px; color: #4ade80; text-shadow: 0 0 40px rgba(74, 222, 128, 0.4); font-family: 'Rajdhani', sans-serif; }
+    #initial-btn, #escape-btn { background: transparent; color: #e2e8f0; border: 2px solid rgba(255, 255, 255, 0.15); padding: 14px 45px; font-size: 1.6rem; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s ease; }
     #escape-btn { display: none; position: absolute; background: #4ade80; color: #0d0f12; z-index: 100000; }
-
-    .watermark-bg {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      font-size: 35vw; font-weight: 700; color: #ffffff; opacity: 0.02; 
-      z-index: -1; user-select: none; pointer-events: none; letter-spacing: 10px;
+    
+    .watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 35vw; font-weight: 700; color: #ffffff; opacity: 0.02; z-index: -1; user-select: none; pointer-events: none; letter-spacing: 10px; font-family: 'Rajdhani', sans-serif; }
+    
+    /* --- HUD & Minimal Life Ticks --- */
+    .hud { 
+      position: absolute; 
+      top: 30px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      display: flex; 
+      gap: 10px; 
+      z-index: 10; 
+      align-items: center;
     }
-
-    .hud { position: absolute; top: 25px; left: 25px; font-size: 18px; letter-spacing: 2px; font-weight: 600; }
-
-    .top-right-btns {
-      position: absolute; top: 20px; right: 85px; display: flex; gap: 10px; z-index: 10;
-    }
-    .top-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #e2e8f0; border-radius: 8px; width: 42px; height: 42px;
-      font-size: 18px; font-weight: 700; cursor: pointer;
-      display: flex; justify-content: center; align-items: center;
-      transition: all 0.2s ease; font-family: 'Rajdhani', sans-serif;
-    }
-    .top-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: #4ade80; color: #4ade80; }
-
-    /* ปุ่มเมนูไอคอน ☰ มุมขวาบน */
-    .menu-float-btn {
-      position: absolute; top: 20px; right: 25px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #e2e8f0; width: 42px; height: 42px; border-radius: 8px;
-      font-size: 20px; font-weight: 700; cursor: pointer; z-index: 10;
-      display: flex; justify-content: center; align-items: center;
-      font-family: 'Rajdhani', sans-serif;
+    .life-tick {
+      width: 5px;
+      height: 26px;
+      background-color: #4ade80;
+      border-radius: 2px;
       transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
     }
-    .menu-float-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: #4ade80; color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3); }
+    .life-tick.lost {
+      background-color: rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
 
-    .game-container {
-      text-align: center; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 600px;
+    /* --- Life Warning Banner --- */
+    .life-warning-banner {
+      position: absolute;
+      top: 75px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-align: center;
+      z-index: 15;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      white-space: nowrap;
     }
+    .life-warning-banner.show-warning-2 {
+      opacity: 1;
+      color: #ef4444;
+      text-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+      animation: warning-pulse 0.5s infinite alternate;
+    }
+    .life-warning-banner.show-warning-1 {
+      opacity: 1;
+      color: #fbbf24;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(251, 191, 36, 0.5);
+      font-family: 'Prompt', sans-serif;
+    }
+    @keyframes warning-pulse {
+      0% { opacity: 0.5; transform: translateX(-50%) scale(0.98); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1.02); }
+    }
+
+    .top-right-btns { position: absolute; top: 20px; right: 85px; display: flex; gap: 10px; z-index: 10; }
+    .top-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; width: 42px; height: 42px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
+    .top-btn:hover { background: rgba(255,255,255,0.15); border-color: #4ade80; color: #4ade80; }
+    .menu-float-btn { position: absolute; top: 20px; right: 25px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; width: 42px; height: 42px; border-radius: 8px; font-size: 20px; cursor: pointer; z-index: 10; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
+    .menu-float-btn:hover { border-color: #4ade80; color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3); }
+
+    .game-container { text-align: center; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 600px; }
     .history { font-size: 18px; color: #a0aec0; height: 25px; text-align: center; font-weight: 500; letter-spacing: 2px; }
     .error-msg { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
-    .arcade-input-screen { font-size: 4rem; font-weight: 700; letter-spacing: 4px; color: #4ade80; text-shadow: 0 0 20px rgba(74, 222, 128, 0.4); min-height: 80px; display: flex; justify-content: center; align-items: center; text-transform: uppercase; }
+    .arcade-input-screen { font-size: 4rem; font-weight: 700; letter-spacing: 4px; color: #4ade80; text-shadow: 0 0 20px rgba(74, 222, 128, 0.4); min-height: 80px; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; }
     .cursor { display: inline-block; width: 12px; height: 45px; background-color: #ffffff; margin-left: 4px; animation: blink 0.8s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     .streak-minimal { font-size: 1.1rem; letter-spacing: 2px; color: #6c7a8c; text-transform: uppercase; font-weight: 600; display: flex; align-items: center; gap: 15px; }
-    .streak-num { color: #38bdf8; font-weight: 700; font-size: 1.3rem; }
-    .best-num { color: #fbbf24; font-weight: 700; font-size: 1.3rem; }
+    .streak-num { color: #38bdf8; font-weight: 700; font-size: 1.3rem; font-family: 'Rajdhani', sans-serif; }
+    .best-num { color: #fbbf24; font-weight: 700; font-size: 1.3rem; font-family: 'Rajdhani', sans-serif; }
 
-    .leaderboard-box {
-      margin-top: 15px; font-size: 0.9rem; letter-spacing: 1px; color: #94a3b8;
-      border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 12px;
-      width: 100%; max-width: 350px; max-height: 220px; overflow-y: auto; display: none;
-      background: rgba(13, 15, 18, 0.95); border-radius: 8px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
+    .leaderboard-box { margin-top: 15px; font-size: 0.9rem; letter-spacing: 1px; color: #94a3b8; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 12px; width: 100%; max-width: 350px; max-height: 220px; overflow-y: auto; display: none; background: rgba(13, 15, 18, 0.95); border-radius: 8px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
     .score-row { display: flex; justify-content: space-between; padding: 4px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
-
-    /* --- หน้าจอเกมแมวอ้าปาก --- */
-    #cat-game-view {
-      display: none;
-      width: 100%; height: 100%;
-      flex-direction: column; justify-content: center; align-items: center; gap: 20px;
-    }
-    .cat-box {
-      position: relative; width: 360px; height: 280px; background: #161b22;
-      border: 3px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
-      display: flex; flex-direction: column; justify-content: space-between; padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    }
-    .teeth-row { display: flex; justify-content: space-around; gap: 8px; }
-    .tooth {
-      width: 35px; height: 45px; background: #e2e8f0; border: none;
-      border-radius: 6px 6px 12px 12px; cursor: pointer; font-weight: 700;
-      font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: #0d0f12; transition: all 0.15s ease;
-    }
-    .tooth:hover:not(:disabled) { background: #4ade80; transform: translateY(-3px); }
-    .tooth:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
-    .tooth.bitten { background: #ef4444 !important; color: white; animation: shake 0.3s ease; }
-    .cat-box.chomp { border-color: #ef4444; animation: shake 0.3s ease; }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-    .cat-face-indicator { font-size: 4rem; user-select: none; margin: 10px 0; text-align: center; }
-
-    /* --- แจ้งเตือนทิป (Tip Popup) --- */
-    #tip-popup {
-      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-      background: rgba(22, 27, 34, 0.95); border: 1px solid #4ade80; color: #e2e8f0;
-      padding: 12px 24px; border-radius: 10px; font-size: 1rem; letter-spacing: 1px;
-      box-shadow: 0 5px 20px rgba(74, 222, 128, 0.3); z-index: 999999;
-      transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; pointer-events: none;
-    }
-    #tip-popup.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-
     .hidden-input { position: absolute; opacity: 0; pointer-events: none; }
+
+    /* --- Custom In-Game Score Submission Screen --- */
+    #game-over-screen {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(13, 15, 18, 0.95);
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+    .game-over-title {
+      font-size: 4rem;
+      font-weight: 700;
+      color: #ef4444;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 6px;
+      text-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+    }
+    .game-over-streak {
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      color: #a0aec0;
+      font-weight: 600;
+    }
+    .game-over-streak span {
+      color: #4ade80;
+      font-weight: 700;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+    }
+    .score-input-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+    .custom-name-input {
+      background: #181b21;
+      border: 2px solid #2a2e38;
+      color: #4ade80;
+      padding: 14px;
+      font-size: 1.2rem;
+      text-align: center;
+      border-radius: 10px;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 3px;
+      outline: none;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+    .custom-name-input:focus {
+      border-color: #4ade80;
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+    }
+    .custom-submit-btn {
+      background: #4ade80;
+      color: #0d0f12;
+      border: none;
+      padding: 14px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      letter-spacing: 2px;
+      font-family: 'Prompt', sans-serif;
+      transition: all 0.2s ease;
+    }
+    .custom-submit-btn:hover {
+      background: #22c55e;
+      box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* --- หน้าจอเกมแมวอ้าปาก (Cat Dentist) --- */
+    #cat-game-view { display: none; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; gap: 15px; position: relative; }
+    .cat-box {
+      position: relative; 
+      width: 450px; 
+      height: 480px; 
+      background: url('https://cdn.phototourl.com/free/2026-08-17-6534f1b0-ff1c-472e-8c6c-ef429eadcff8.jpg') no-repeat center center;
+      background-size: contain; 
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .cat-box.bitten-state {
+      background: url('https://media.discordapp.net/attachments/1335747244003033088/1538992671488741457/200628e0-9324-4c64-b0d1-af68247f4623.png?ex=6a84b21d&is=6a83609d&hm=d0360fbcea38ecec59d9f69da355d7222c90a737c65de5290e58cab53b042a66&=&format=webp&quality=lossless&width=948&height=1024') no-repeat center center !important;
+      background-size: contain !important;
+      border: 2px solid #ef4444;
+      box-shadow: 0 0 35px rgba(239, 68, 68, 0.7), inset 0 0 25px rgba(239, 68, 68, 0.5);
+    }
+    .game-over-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #ef4444;
+      text-shadow: 0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(0,0,0,0.9);
+      letter-spacing: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 20;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .cat-box.bitten-state .game-over-overlay { opacity: 1; }
+    .cat-box.bitten-state .tooth { display: none !important; }
+
+    .cat-box.chomp { animation: fierce-shake 0.4s ease; }
+    @keyframes fierce-shake { 
+      0%, 100% { transform: scale(1) translate(0, 0); } 
+      20% { transform: scale(1.05) translate(-15px, 10px); } 
+      40% { transform: scale(1.05) translate(15px, -10px); } 
+      60% { transform: scale(1.05) translate(-15px, -10px); } 
+      80% { transform: scale(1.05) translate(15px, 10px); } 
+    }
+
+    .tooth {
+      position: absolute;
+      width: 38px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50% 50% 40% 40%; 
+      cursor: pointer;
+      transition: all 0.2s ease;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+    .tooth:hover:not(:disabled) { background: rgba(74, 222, 128, 0.25); border-color: #4ade80; }
+    .tooth:disabled {
+      background: rgba(10, 10, 15, 0.95) !important;
+      box-shadow: inset 0 10px 20px rgba(0,0,0,1);
+      border: 1px solid rgba(0,0,0,0.8);
+      cursor: not-allowed;
+      transform: translate(-50%, -50%) scale(0.85);
+    }
+    .tooth.bitten {
+      background: rgba(239, 68, 68, 0.8) !important;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.9), inset 0 0 10px rgba(0,0,0,0.5);
+      border-color: #ef4444 !important;
+      transform: translate(-50%, -50%) scale(1.05);
+      z-index: 10;
+    }
+
+    #tip-popup { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(22, 27, 34, 0.95); border: 1px solid #4ade80; color: #e2e8f0; padding: 12px 24px; border-radius: 10px; font-size: 1rem; letter-spacing: 1px; box-shadow: 0 5px 20px rgba(74, 222, 128, 0.3); z-index: 999999; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; pointer-events: none; }
+    #tip-popup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* --- NCS Music Player Styles --- */
+    #ncs-player-container {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 100000;
+    }
+    #ncs-toggle-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    #ncs-toggle-btn:hover {
+      border-color: #4ade80;
+      color: #4ade80;
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+    }
+    #ncs-control-panel {
+      position: absolute;
+      bottom: 60px;
+      right: 0;
+      background: rgba(13, 15, 18, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      width: 250px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+    }
+    #ncs-player-container:hover #ncs-control-panel {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .ncs-info {
+      font-size: 0.9rem;
+      color: #4ade80;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .ncs-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #a0aec0;
+    }
+    .ncs-slider-row input[type="range"] {
+      flex: 1;
+      accent-color: #4ade80;
+      cursor: pointer;
+    }
+    .ncs-btn-row {
+      display: flex;
+      gap: 8px;
+    }
+    .ncs-sub-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ncs-sub-btn:hover {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
   </style>
 </head>
 <body>
 
-  <!-- ================= หน้าแรก (ตามรูปที่ 2: W2W + Play + ปุ่มเมนูด้านล่าง) ================= -->
+  <!-- ================= หน้าแรก (Home Screen) ================= -->
   <div id="main-home-screen">
     <div class="home-title">W2W</div>
     <button class="home-play-btn" onclick="openGame('w2w')">PLAY</button>
     <button class="home-menu-icon-btn" onclick="goToHub()" title="Open Hub">☰</button>
   </div>
 
-  <!-- ================= หน้า HUB (ตามรูปที่ 1: หัวข้อ ALL + เลือกเกม) ================= -->
+  <!-- ================= หน้า HUB (Menu) ================= -->
   <div id="hub-screen">
-    <div class="hub-title">ALL</div>
+    <div class="hub-title">MENU</div>
     <div class="hub-menu">
-      <button class="hub-btn" onclick="openGame('w2w')">
-        <span style="font-size: 2.5rem;">🔤</span>
-        W2W GAME
+      <button class="hub-card-btn" onclick="openGame('w2w')" title="W2W Game">
+        <span class="hub-card-w2w">W2W</span>
       </button>
-      <button class="hub-btn" onclick="openGame('cat')">
-        <span style="font-size: 2.5rem;">😼</span>
-        CAT DENTIST
+      <button class="hub-card-btn" onclick="openGame('cat')" title="Cat Dentist">
+        <div class="hub-card-cat"></div>
       </button>
     </div>
   </div>
-
 
   <!-- ================= W2W GAME VIEW ================= -->
   <div id="w2w-game-view">
@@ -286,14 +406,23 @@
     </div>
 
     <div class="watermark-bg" id="watermark">W2W</div>
-    <div class="hud"><span id="lives">❤️❤️❤️❤️❤️</span></div>
+    
+    <!-- Minimal Life Ticks & Warning Banner -->
+    <div class="hud" id="lives-container">
+      <div class="life-tick active" data-index="0"></div>
+      <div class="life-tick active" data-index="1"></div>
+      <div class="life-tick active" data-index="2"></div>
+      <div class="life-tick active" data-index="3"></div>
+      <div class="life-tick active" data-index="4"></div>
+    </div>
+    
+    <div id="life-warning-banner" class="life-warning-banner"></div>
 
     <div class="top-right-btns">
       <button class="top-btn" id="exit-fullscreen-btn" title="Exit Fullscreen">✕</button>
       <button class="top-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
     </div>
 
-    <!-- ปุ่มเมนูไอคอน ☰ มุมขวาบน -->
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
 
     <div class="game-container">
@@ -317,45 +446,74 @@
         <input type="text" id="word-input" class="hidden-input" autocomplete="off" />
       </form>
     </div>
-  </div>
 
+    <!-- Custom In-Game Score Submission Overlay -->
+    <div id="game-over-screen">
+      <div class="game-over-title">GAME OVER</div>
+      <div class="game-over-streak">FINAL STREAK: <span id="final-streak-display">0</span></div>
+      <div class="score-input-box">
+        <input type="text" id="custom-player-name" class="custom-name-input" placeholder="ENTER YOUR NAME" maxlength="12" autocomplete="off" />
+        <button id="custom-submit-btn" class="custom-submit-btn">SUBMIT SCORE</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= CAT DENTIST VIEW ================= -->
   <div id="cat-game-view">
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
-    <div style="font-size: 3rem; font-weight: 700; color: #4ade80; letter-spacing: 4px;">CAT DENTIST</div>
-    <div class="history" id="cat-status-msg">จิ้มฟันแมวทีละซี่ ระวังโดนงับ!</div>
+    <div class="history" id="cat-status-msg" style="margin-bottom: 5px;">จิ้มฟันแมวทีละซี่ ระวังโดนงับ!</div>
 
     <div class="cat-box" id="cat-box">
-      <div class="teeth-row">
-        <button class="tooth" data-index="0">1</button>
-        <button class="tooth" data-index="1">2</button>
-        <button class="tooth" data-index="2">3</button>
-        <button class="tooth" data-index="3">4</button>
-        <button class="tooth" data-index="4">5</button>
-      </div>
-      <div class="cat-face-indicator" id="cat-face">😼</div>
-      <div class="teeth-row">
-        <button class="tooth" data-index="5">6</button>
-        <button class="tooth" data-index="6">7</button>
-        <button class="tooth" data-index="7">8</button>
-        <button class="tooth" data-index="8">9</button>
-        <button class="tooth" data-index="9">10</button>
-      </div>
+      <div class="game-over-overlay">GAME OVER</div>
+
+      <!-- แถวฟันบน (8 ซี่) -->
+      <button class="tooth top-t" data-index="0" style="top: 48%; left: 23%; transform: translate(-50%, -50%) rotate(-15deg);"></button>
+      <button class="tooth top-t" data-index="1" style="top: 43%; left: 30%; transform: translate(-50%, -50%) rotate(-10deg);"></button>
+      <button class="tooth top-t" data-index="2" style="top: 40%; left: 37%;"></button>
+      <button class="tooth top-t" data-index="3" style="top: 38%; left: 45%;"></button>
+      <button class="tooth top-t" data-index="4" style="top: 38%; left: 54%;"></button>
+      <button class="tooth top-t" data-index="5" style="top: 40%; left: 63%; transform: translate(-50%, -50%) rotate(10deg);"></button>
+      <button class="tooth top-t" data-index="6" style="top: 43%; left: 71%; transform: translate(-50%, -50%) rotate(15deg);"></button>
+      <button class="tooth top-t" data-index="7" style="top: 48%; left: 77%; transform: translate(-50%, -50%) rotate(25deg);"></button>
+
+      <!-- แถวฟันล่าง (8 ซี่) -->
+      <button class="tooth bot-t" data-index="8" style="top: 67%; left: 21%; transform: translate(-50%, -50%) rotate(15deg);"></button>
+      <button class="tooth bot-t" data-index="9" style="top: 74%; left: 26%; transform: translate(-50%, -50%) rotate(10deg);"></button>
+      <button class="tooth bot-t" data-index="10" style="top: 79%; left: 33%;"></button>
+      <button class="tooth bot-t" data-index="11" style="top: 79%; left: 44%;"></button>
+      <button class="tooth bot-t" data-index="12" style="top: 79%; left: 55%;"></button>
+      <button class="tooth bot-t" data-index="13" style="top: 78%; left: 66%; transform: translate(-50%, -50%) rotate(-10deg);"></button>
+      <button class="tooth bot-t" data-index="14" style="top: 74%; left: 74%; transform: translate(-50%, -50%) rotate(-15deg);"></button>
+      <button class="tooth bot-t" data-index="15" style="top: 67%; left: 77%; transform: translate(-50%, -50%) rotate(-25deg);"></button>
     </div>
-    <button class="hub-btn" id="cat-reset-btn" style="display:none; width: auto; padding: 10px 30px;" onclick="initCatGame()">PLAY AGAIN</button>
+
+    <button class="hub-card-btn" id="cat-reset-btn" style="display:none; width: auto; height: auto; padding: 12px 30px; margin-top: 15px; font-size: 1.2rem; font-weight: 700; color: #4ade80; letter-spacing: 2px;" onclick="initCatGame()">PLAY AGAIN</button>
   </div>
 
-  <!-- Tip Popup แจ้งเตือนเมื่อกดปุ่ม X ครบ 10 ครั้ง -->
   <div id="tip-popup">💡 ไม่รู้ว่ารู้หรือยัง แต่ว่าปุ่มนี้ไม่ใช่ปุ่มปิดเกมหรอก แค่ปุ่มย่อหน้าจอนะครับ</div>
 
+  <!-- ================= NCS MUSIC PLAYER WIDGET ================= -->
+  <div id="ncs-player-container">
+    <button id="ncs-toggle-btn" title="Click to Mute / Hover for Controls">🔊</button>
+    <div id="ncs-control-panel">
+      <div class="ncs-info" id="ncs-song-title">Loading NCS...</div>
+      <div class="ncs-slider-row">
+        <span>🔈</span>
+        <input type="range" id="ncs-volume-slider" min="0" max="1" step="0.05" value="0.3">
+        <span>🔊</span>
+      </div>
+      <div class="ncs-btn-row">
+        <button class="ncs-sub-btn" onclick="prevNcsSong()">⏮ Prev</button>
+        <button class="ncs-sub-btn" onclick="nextNcsSong()">Next ⏭</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const SUPABASE_URL = 'https://nafycmwlhczpdgscbeep.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // --- ระบบสลับหน้าจอ (Home, Hub, Games) ---
     function openGame(gameName) {
       document.getElementById('main-home-screen').style.display = 'none';
       document.getElementById('hub-screen').style.display = 'none';
@@ -377,33 +535,25 @@
       document.getElementById('hub-screen').style.display = 'flex';
     }
 
-
-    // --- ระบบนับคลิกปุ่ม X (Exit Fullscreen) ครบ 10 ครั้ง ---
     let exitClickCount = 0;
     const exitFsBtn = document.getElementById('exit-fullscreen-btn');
     const tipPopup = document.getElementById('tip-popup');
 
     exitFsBtn.addEventListener('click', () => {
       if (document.fullscreenElement) document.exitFullscreen().catch(err => {});
-      
       exitClickCount++;
       if (exitClickCount === 10) {
         tipPopup.classList.add('show');
-        setTimeout(() => {
-          tipPopup.classList.remove('show');
-        }, 5000); // ซ่อนทิปหลังจาก 5 วินาที
+        setTimeout(() => { tipPopup.classList.remove('show'); }, 5000);
       }
-
       input.focus();
     });
 
-
-    // --- โค้ดเกม W2W ---
+    // ================= W2W LOGIC =================
     let streak = 0;
     let lives = 5;
     let lastWord = "";
     let requiredPrefix = ""; 
-    let lastSubmitTime = 0;
     const usedWords = new Set();
     let dictionary = new Set();
     let escapeCount = 0;
@@ -411,12 +561,13 @@
 
     const popSound = new Audio('pop.wav'); popSound.volume = 0.5;
     const deathSound = new Audio('bass_drop.mp3'); deathSound.volume = 0.35;
+    const warningSound = new Audio('pop.wav'); warningSound.volume = 0.8;
 
     const form = document.getElementById('game-form');
     const input = document.getElementById('word-input');
     const typedTextEl = document.getElementById('typed-text');
-    const watermarkEl = document.getElementById('watermark');
-    const livesEl = document.getElementById('lives');
+    const lifeTicks = document.querySelectorAll('.life-tick');
+    const warningBanner = document.getElementById('life-warning-banner');
     const statusEl = document.getElementById('status-msg');
     const streakCounterEl = document.getElementById('streak-counter');
     const bestCounterEl = document.getElementById('best-counter');
@@ -427,11 +578,17 @@
     const initialBtn = document.getElementById('initial-btn');
     const escapeBtn = document.getElementById('escape-btn');
 
+    // Custom Game Over Elements
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const finalStreakDisplay = document.getElementById('final-streak-display');
+    const customPlayerName = document.getElementById('custom-player-name');
+    const customSubmitBtn = document.getElementById('custom-submit-btn');
+
     trophyBtn.addEventListener('click', () => {
       const isHidden = leaderboardContainer.style.display !== 'block';
       leaderboardContainer.style.display = isHidden ? 'block' : 'none';
       if (isHidden) fetchLeaderboard();
-      input.focus();
+      if (gameOverScreen.style.display !== 'flex') input.focus();
     });
 
     async function fetchLeaderboard() {
@@ -448,13 +605,25 @@
     }
     fetchLeaderboard();
 
-    async function checkAndSaveScore(currentStreak) {
-      if (currentStreak <= 0) return;
-      let playerName = prompt(`GAME OVER! Final Streak: ${currentStreak}\nEnter your name for Online Leaderboard:`, "Player");
-      if (!playerName || playerName.trim() === "") playerName = "Anonymous";
-      await _supabase.from('leaderboard').insert([{ name: playerName.trim().substring(0, 12), score: currentStreak }]);
+    async function submitScoreAndRestart() {
+      let playerName = customPlayerName.value.trim();
+      if (!playerName) playerName = "ANONYMOUS";
+      
+      await _supabase.from('leaderboard').insert([{ name: playerName.substring(0, 12), score: streak }]);
       fetchLeaderboard();
+
+      gameOverScreen.style.display = 'none';
+      customPlayerName.value = "";
+      resetGame();
     }
+
+    customSubmitBtn.addEventListener('click', submitScoreAndRestart);
+    customPlayerName.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitScoreAndRestart();
+      }
+    });
 
     fetch('words_dictionary.json')
       .then(res => res.json())
@@ -479,7 +648,11 @@
       if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(err => {});
     });
 
-    window.addEventListener('click', () => { if(document.getElementById('w2w-game-view').style.display === 'flex') input.focus(); });
+    window.addEventListener('click', () => { 
+      if(document.getElementById('w2w-game-view').style.display === 'flex' && gameOverScreen.style.display !== 'flex') {
+        input.focus();
+      }
+    });
 
     escapeBtn.addEventListener('mouseover', () => {
       if (escapeCount < 2) {
@@ -489,6 +662,7 @@
         escapeBtn.style.top = `${Math.random() * (window.innerHeight - 100)}px`;
       }
     });
+    
     escapeBtn.addEventListener('click', () => {
       if (escapeCount >= 2) startScreen.style.display = 'none';
       input.focus();
@@ -515,9 +689,34 @@
       typedTextEl.innerText = requiredPrefix.toUpperCase();
     });
 
+    function updateLivesDisplay() {
+      lifeTicks.forEach((tick, index) => {
+        if (index < lives) {
+          tick.classList.remove('lost');
+          tick.classList.add('active');
+        } else {
+          tick.classList.add('lost');
+          tick.classList.remove('active');
+        }
+      });
+
+      warningBanner.className = "life-warning-banner";
+      if (lives === 2) {
+        warningBanner.innerText = "พลาดได้อีกสองทีเด้อ คิดดี ๆ เด้อ";
+        warningBanner.classList.add('show-warning-2');
+        warningSound.currentTime = 0; warningSound.play().catch(e => {});
+      } else if (lives === 1) {
+        warningBanner.innerText = "พลาดอีกที ก็กลับมาแก้อะไรไม่ได้แล้วนะ";
+        warningBanner.classList.add('show-warning-1');
+        warningSound.currentTime = 0; warningSound.play().catch(e => {});
+      } else {
+        warningBanner.innerText = "";
+      }
+    }
+
     function handleWrong(msg) {
       lives--;
-      livesEl.innerText = "❤️".repeat(Math.max(0, lives)) + "🖤".repeat(5 - Math.max(0, lives));
+      updateLivesDisplay();
       statusEl.className = "history error-msg";
       statusEl.innerText = `${msg} [-1 Life]`;
       input.value = requiredPrefix.toUpperCase();
@@ -525,44 +724,43 @@
 
       if (lives <= 0) {
         deathSound.currentTime = 0; deathSound.play().catch(e => {});
-        setTimeout(async () => {
-          await checkAndSaveScore(streak);
-          resetGame();
+        setTimeout(() => {
+          finalStreakDisplay.innerText = streak;
+          gameOverScreen.style.display = 'flex';
+          customPlayerName.focus();
         }, 150);
       }
     }
 
     function resetGame() {
       streak = 0; lives = 5; lastWord = ""; requiredPrefix = ""; usedWords.clear();
-      livesEl.innerText = "❤️❤️❤️❤️❤️"; streakCounterEl.innerText = "0";
-      statusEl.innerText = "System Reset."; statusEl.className = "history";
+      updateLivesDisplay();
+      streakCounterEl.innerText = "0";
+      statusEl.innerText = "SystemReset."; statusEl.className = "history";
       input.value = ""; typedTextEl.innerText = "";
+      input.focus();
     }
 
-
-    // --- โค้ดเกมแมวอ้าปาก ---
+    // ================= CAT DENTIST LOGIC =================
     let trapTooth = 0;
     let catGameOver = false;
     const teethButtons = document.querySelectorAll('#cat-game-view .tooth');
     const catStatus = document.getElementById('cat-status-msg');
     const catBox = document.getElementById('cat-box');
-    const catFace = document.getElementById('cat-face');
     const catResetBtn = document.getElementById('cat-reset-btn');
 
     function initCatGame() {
-      trapTooth = Math.floor(Math.random() * 10);
+      trapTooth = Math.floor(Math.random() * 16);
       catGameOver = false;
-      catBox.classList.remove('chomp');
-      catFace.innerText = "😼";
+      catBox.classList.remove('chomp', 'bitten-state'); 
       catStatus.innerText = "จิ้มฟันแมวทีละซี่ ระวังโดนงับ!";
       catStatus.style.color = "#a0aec0";
       catResetBtn.style.display = 'none';
 
       teethButtons.forEach(btn => {
         btn.disabled = false;
+        btn.style.display = 'block';
         btn.classList.remove('bitten');
-        btn.style.background = "#e2e8f0";
-        btn.style.color = "#0d0f12";
       });
     }
 
@@ -575,22 +773,105 @@
         if (index === trapTooth) {
           catGameOver = true;
           btn.classList.add('bitten');
+          catBox.classList.add('bitten-state');
           catBox.classList.add('chomp');
-          catFace.innerText = "🙀";
-          catStatus.innerText = "¡CHOMP! โดนงับแล้ว! ดื่ม!";
+          
+          catStatus.innerText = "¡CHOMP! โดนงับแล้ว!";
           catStatus.style.color = "#ef4444";
           deathSound.currentTime = 0; deathSound.play().catch(e => {});
-          teethButtons.forEach(b => b.disabled = true);
           catResetBtn.style.display = 'block';
         } else {
-          btn.style.background = "#334155";
-          btn.style.color = "#64748b";
           catStatus.innerText = "รอดไป! ส่งตาถัดไปจิ้มต่อ";
           catStatus.style.color = "#4ade80";
           popSound.currentTime = 0; popSound.play().catch(e => {});
         }
       });
     });
+
+    // ================= NCS MUSIC PLAYER LOGIC =================
+    const ncsPlaylist = [
+      { title: "Uplink & Alex Skrindo - Me & You", src: "ncs/Song1.mp3" },
+      { title: "Unison - Aperture", src: "ncs/Song2.mp3" },
+      { title: "Tobu - Good Times", src: "ncs/Song3.mp3" },
+      { title: "Tobu - Hope", src: "ncs/Song4.mp3" },
+      { title: "Tobu - Sound of Goodbye", src: "ncs/Song5.mp3" },
+      { title: "Jo Cohen & Sex Whales - Run Away", src: "ncs/Song6.mp3" },
+      { title: "Jim Yosef - Lights", src: "ncs/Song7.mp3" },
+      { title: "Jim Yosef - Firefly", src: "ncs/Song8.mp3" },
+      { title: "Song 9", src: "ncs/Song9.mp3" },
+      { title: "Dirty Palm - Oblivion", src: "ncs/Song10.mp3" },
+      { title: "Inukshuk - The Long Road Home", src: "ncs/Song11.mp3" },
+      { title: "Jim Yosef - Arrow", src: "ncs/Song12.mp3" },
+      { title: "Itro & Tobu - Cloud 9", src: "ncs/Song13.mp3" },
+      { title: "Au5 & Last Heroes - Lush", src: "ncs/Song14.mp3" }
+    ];
+
+    let currentSongIndex = 0;
+    const bgMusic = new Audio();
+    bgMusic.volume = 0.3;
+    bgMusic.loop = false;
+
+    const ncsToggleBtn = document.getElementById('ncs-toggle-btn');
+    const ncsVolumeSlider = document.getElementById('ncs-volume-slider');
+    const ncsSongTitle = document.getElementById('ncs-song-title');
+
+    function loadNcsSong(index) {
+      currentSongIndex = index;
+      bgMusic.src = ncsPlaylist[currentSongIndex].src;
+      ncsSongTitle.innerText = ncsPlaylist[currentSongIndex].title;
+      bgMusic.play().catch(err => {
+        console.log("Autoplay pending user interaction.");
+      });
+    }
+
+    bgMusic.addEventListener('ended', () => {
+      currentSongIndex = (currentSongIndex + 1) % ncsPlaylist.length;
+      loadNcsSong(currentSongIndex);
+    });
+
+    function nextNcsSong() {
+      currentSongIndex = (currentSongIndex + 1) % ncsPlaylist.length;
+      loadNcsSong(currentSongIndex);
+    }
+
+    function prevNcsSong() {
+      currentSongIndex = (currentSongIndex - 1 + ncsPlaylist.length) % ncsPlaylist.length;
+      loadNcsSong(currentSongIndex);
+    }
+
+    let isMuted = false;
+    let lastVolume = 0.3;
+
+    ncsToggleBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      if (isMuted) {
+        lastVolume = bgMusic.volume;
+        bgMusic.volume = 0;
+        ncsVolumeSlider.value = 0;
+        ncsToggleBtn.innerText = "🔇";
+      } else {
+        bgMusic.volume = lastVolume > 0 ? lastVolume : 0.3;
+        ncsVolumeSlider.value = bgMusic.volume;
+        ncsToggleBtn.innerText = "🔊";
+      }
+    });
+
+    ncsVolumeSlider.addEventListener('input', (e) => {
+      bgMusic.volume = e.target.value;
+      if (bgMusic.volume > 0) {
+        isMuted = false;
+        ncsToggleBtn.innerText = "🔊";
+      } else {
+        isMuted = true;
+        ncsToggleBtn.innerText = "🔇";
+      }
+    });
+
+    window.addEventListener('click', () => {
+      if (bgMusic.paused && bgMusic.src === "") {
+        loadNcsSong(0);
+      }
+    }, { once: true });
   </script>
 </body>
 </html>
