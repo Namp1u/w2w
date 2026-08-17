@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>W2W Arcade - Game Hub</title>
+  <title>W2W Arcade Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -22,13 +22,62 @@
       position: relative;
     }
 
-    /* --- หน้า LOBBY (เมนูรวมเกม) --- */
+    /* --- หน้าแรก (ตามรูปที่ 2: W2W + ปุ่ม PLAY + เมนูด้านล่าง) --- */
+    #main-home-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #0d0f12;
+      z-index: 99997;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+    }
+    .home-title {
+      font-size: 7rem;
+      font-weight: 700;
+      letter-spacing: 10px;
+      color: #4ade80;
+      text-shadow: 0 0 35px rgba(74, 222, 128, 0.4);
+      text-transform: uppercase;
+    }
+    .home-play-btn {
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: #e2e8f0;
+      padding: 12px 40px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 4px;
+      transition: all 0.2s ease;
+    }
+    .home-play-btn:hover {
+      border-color: #4ade80;
+      color: #4ade80;
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+    }
+    .home-menu-icon-btn {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 2.2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-top: 5px;
+    }
+    .home-menu-icon-btn:hover { color: #4ade80; }
+
+    /* --- หน้า HUB (ตามรูปที่ 1: หัวข้อ ALL + เลือกเกม) --- */
     #hub-screen {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
       background-color: #0d0f12;
       z-index: 99999;
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -128,7 +177,7 @@
     }
     .top-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: #4ade80; color: #4ade80; }
 
-    /* ปุ่มเมนูสไตล์มินิมอล (ขวาบนสุด) */
+    /* ปุ่มเมนูไอคอน ☰ มุมขวาบน */
     .menu-float-btn {
       position: absolute; top: 20px; right: 25px;
       background: rgba(255, 255, 255, 0.05);
@@ -187,14 +236,34 @@
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
     .cat-face-indicator { font-size: 4rem; user-select: none; margin: 10px 0; text-align: center; }
 
+    /* --- แจ้งเตือนทิป (Tip Popup) --- */
+    #tip-popup {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: rgba(22, 27, 34, 0.95); border: 1px solid #4ade80; color: #e2e8f0;
+      padding: 12px 24px; border-radius: 10px; font-size: 1rem; letter-spacing: 1px;
+      box-shadow: 0 5px 20px rgba(74, 222, 128, 0.3); z-index: 999999;
+      transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; pointer-events: none;
+    }
+    #tip-popup.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
     .hidden-input { position: absolute; opacity: 0; pointer-events: none; }
   </style>
 </head>
 <body>
 
-  <!-- ================= LOBBY SCREEN (เมนูรวมเกม) ================= -->
+  <!-- ================= หน้าแรก (ตามรูปที่ 2: W2W + Play + ปุ่มเมนูด้านล่าง) ================= -->
+  <div id="main-home-screen">
+    <div class="home-title">W2W</div>
+    <button class="home-play-btn" onclick="openGame('w2w')">PLAY</button>
+    <button class="home-menu-icon-btn" onclick="goToHub()" title="Open Hub">☰</button>
+  </div>
+
+  <!-- ================= หน้า HUB (ตามรูปที่ 1: หัวข้อ ALL + เลือกเกม) ================= -->
   <div id="hub-screen">
-    <div class="hub-title">ARCADE HUB</div>
+    <div class="hub-title">ALL</div>
     <div class="hub-menu">
       <button class="hub-btn" onclick="openGame('w2w')">
         <span style="font-size: 2.5rem;">🔤</span>
@@ -277,29 +346,56 @@
     <button class="hub-btn" id="cat-reset-btn" style="display:none; width: auto; padding: 10px 30px;" onclick="initCatGame()">PLAY AGAIN</button>
   </div>
 
+  <!-- Tip Popup แจ้งเตือนเมื่อกดปุ่ม X ครบ 10 ครั้ง -->
+  <div id="tip-popup">💡 ไม่รู้ว่ารู้หรือยัง แต่ว่าปุ่มนี้ไม่ใช่ปุ่มปิดเกมหรอก แค่ปุ่มย่อหน้าจอนะครับ</div>
+
 
   <script>
     const SUPABASE_URL = 'https://nafycmwlhczpdgscbeep.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // --- ระบบสลับหน้าจอ Hub / Games ---
+    // --- ระบบสลับหน้าจอ (Home, Hub, Games) ---
     function openGame(gameName) {
+      document.getElementById('main-home-screen').style.display = 'none';
       document.getElementById('hub-screen').style.display = 'none';
       if(gameName === 'w2w') {
         document.getElementById('w2w-game-view').style.display = 'flex';
+        document.getElementById('cat-game-view').style.display = 'none';
         document.getElementById('word-input').focus();
       } else if(gameName === 'cat') {
         document.getElementById('cat-game-view').style.display = 'flex';
+        document.getElementById('w2w-game-view').style.display = 'none';
         initCatGame();
       }
     }
 
     function goToHub() {
+      document.getElementById('main-home-screen').style.display = 'none';
       document.getElementById('w2w-game-view').style.display = 'none';
       document.getElementById('cat-game-view').style.display = 'none';
       document.getElementById('hub-screen').style.display = 'flex';
     }
+
+
+    // --- ระบบนับคลิกปุ่ม X (Exit Fullscreen) ครบ 10 ครั้ง ---
+    let exitClickCount = 0;
+    const exitFsBtn = document.getElementById('exit-fullscreen-btn');
+    const tipPopup = document.getElementById('tip-popup');
+
+    exitFsBtn.addEventListener('click', () => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(err => {});
+      
+      exitClickCount++;
+      if (exitClickCount === 10) {
+        tipPopup.classList.add('show');
+        setTimeout(() => {
+          tipPopup.classList.remove('show');
+        }, 5000); // ซ่อนทิปหลังจาก 5 วินาที
+      }
+
+      input.focus();
+    });
 
 
     // --- โค้ดเกม W2W ---
@@ -326,16 +422,10 @@
     const bestCounterEl = document.getElementById('best-counter');
     const topScoresListEl = document.getElementById('top-scores-list');
     const trophyBtn = document.getElementById('toggle-leaderboard');
-    const exitFsBtn = document.getElementById('exit-fullscreen-btn');
     const leaderboardContainer = document.getElementById('leaderboard-container');
     const startScreen = document.getElementById('start-screen');
     const initialBtn = document.getElementById('initial-btn');
     const escapeBtn = document.getElementById('escape-btn');
-
-    exitFsBtn.addEventListener('click', () => {
-      if (document.fullscreenElement) document.exitFullscreen().catch(err => {});
-      input.focus();
-    });
 
     trophyBtn.addEventListener('click', () => {
       const isHidden = leaderboardContainer.style.display !== 'block';
