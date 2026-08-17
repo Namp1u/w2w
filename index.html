@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>W2W - Word2Word (Secure Arcade Edition)</title>
+  <title>W2W - Word2Word (Online Arcade Edition)</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- โหลดไลบรารี Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
@@ -20,7 +22,6 @@
       overflow: hidden; 
     }
     
-    /* --- หน้าแรกสุด W2W Art Style (ตัวใหญ่สะใจ) --- */
     #start-screen {
       position: fixed;
       top: 0;
@@ -63,7 +64,6 @@
       box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
     }
     
-    /* ปุ่มหนีเมาส์หน้าแรก */
     #escape-btn {
       display: none;
       position: absolute;
@@ -162,7 +162,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      text-transform: uppercase; /* บังคับแสดงผลเป็นพิมพ์ใหญ่ */
+      text-transform: uppercase;
     }
     
     .cursor {
@@ -208,7 +208,6 @@
       text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
     }
 
-    /* Leaderboard Box แบบแนวตั้ง Top 25 */
     .leaderboard-box {
       margin-top: 15px;
       font-size: 0.9rem;
@@ -251,7 +250,6 @@
 </head>
 <body>
 
-  <!-- หน้าแรกสุด W2W Art Style & Play Button -->
   <div id="start-screen">
     <div class="start-title">W2W</div>
     <button id="initial-btn">PLAY</button>
@@ -279,10 +277,9 @@
       <div class="streak-item">BEST <span class="best-num" id="best-counter">0</span></div>
     </div>
 
-    <!-- Leaderboard แบบแนวตั้ง Top 25 -->
     <div class="leaderboard-box" id="leaderboard-container">
-      <div class="leaderboard-title">TOP 25 LEADERBOARD</div>
-      <div id="top-scores-list"></div>
+      <div class="leaderboard-title">ONLINE TOP 25</div>
+      <div id="top-scores-list">Loading scores...</div>
     </div>
 
     <form id="game-form">
@@ -291,6 +288,12 @@
   </div>
 
   <script>
+    // --- ตั้งค่าเชื่อมต่อ Supabase ของคุณตรงนี้ ---
+    const SUPABASE_URL = 'https://nafycmwlhczpdgscbeep.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
+    
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     (function() {
       const popSound = new Audio('pop.wav');
       popSound.volume = 0.5;
@@ -305,11 +308,9 @@
       let lastSubmitTime = 0;
       const usedWords = new Set();
       let dictionary = new Set();
-      
       let escapeCount = 0;
 
-      // โหลด Leaderboard สูงสุด 25 อันดับ
-      let leaderboard = JSON.parse(localStorage.getItem('w2w_top25_leaderboard')) || [];
+      let leaderboard = [];
       
       const form = document.getElementById('game-form');
       const input = document.getElementById('word-input');
@@ -328,13 +329,26 @@
       const escapeBtn = document.getElementById('escape-btn');
 
       trophyBtn.addEventListener('click', () => {
-        leaderboardContainer.style.display = leaderboardContainer.style.display === 'block' ? 'none' : 'block';
+        const isHidden = leaderboardContainer.style.display !== 'block';
+        leaderboardContainer.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) fetchLeaderboard();
         input.focus();
       });
 
-      updateLeaderboardDisplay();
+      // ดึงคะแนนออนไลน์ Top 25 จาก Supabase
+      async function fetchLeaderboard() {
+        const { data, error } = await _supabase
+          .from('leaderboard')
+          .select('name, score')
+          .order('score', { ascending: false })
+          .limit(25);
 
-      function updateLeaderboardDisplay() {
+        if (error) {
+          topScoresListEl.innerHTML = '<div style="color:#ff4d4d; text-align:center;">Failed to load</div>';
+          return;
+        }
+
+        leaderboard = data || [];
         if (leaderboard.length > 0) {
           bestCounterEl.innerText = leaderboard[0].score;
         } else {
@@ -342,7 +356,7 @@
         }
 
         if (leaderboard.length === 0) {
-          topScoresListEl.innerHTML = '<div style="text-align:center; color: #6c7a8c; padding: 10px;">No scores yet. Play to rank!</div>';
+          topScoresListEl.innerHTML = '<div style="text-align:center; color: #6c7a8c; padding: 10px;">No online scores yet.</div>';
           return;
         }
 
@@ -354,21 +368,23 @@
         }).join('');
       }
 
+      fetchLeaderboard();
+
       function escapeHtml(text) {
         return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       }
 
-      function checkAndSaveScore(currentStreak) {
+      async function checkAndSaveScore(currentStreak) {
         if (currentStreak <= 0) return;
-        let playerName = prompt(`GAME OVER! Final Streak: ${currentStreak}\nEnter your name for Top 25 Leaderboard:`, "Player");
+        let playerName = prompt(`GAME OVER! Final Streak: ${currentStreak}\nEnter your name for Online Leaderboard:`, "Player");
         if (!playerName || playerName.trim() === "") playerName = "Anonymous";
         
-        leaderboard.push({ name: playerName.trim().substring(0, 12), score: currentStreak });
-        leaderboard.sort((a, b) => b.score - a.score);
-        leaderboard = leaderboard.slice(0, 25); // ตัดเก็บบันทึกสูงสุด 25 อันดับจริง
-        
-        localStorage.setItem('w2w_top25_leaderboard', JSON.stringify(leaderboard));
-        updateLeaderboardDisplay();
+        // ส่งคะแนนขึ้นฐานข้อมูลออนไลน์ทันที
+        await _supabase.from('leaderboard').insert([
+          { name: playerName.trim().substring(0, 12), score: currentStreak }
+        ]);
+
+        await fetchLeaderboard();
       }
 
       let showStreakBg = false;
@@ -394,7 +410,6 @@
           statusEl.className = "history error-msg";
         });
 
-      // บังคับแปลงตัวอักษรทุกตัวที่พิมพ์ให้เป็นตัวพิมพ์ใหญ่ (Uppercase) ทันที
       input.addEventListener('input', () => {
         let val = input.value.toUpperCase();
         if (requiredPrefix !== "") {
@@ -518,8 +533,8 @@
           deathSound.currentTime = 0;
           deathSound.play().catch(e => {});
 
-          setTimeout(() => {
-            checkAndSaveScore(streak);
+          setTimeout(async () => {
+            await checkAndSaveScore(streak);
             resetGame();
           }, 150);
         }
@@ -537,7 +552,6 @@
         statusEl.className = "history";
         input.value = "";
         typedTextEl.innerText = "";
-        updateLeaderboardDisplay();
       }
 
     })();
