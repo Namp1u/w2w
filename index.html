@@ -149,8 +149,8 @@
   <!-- ================= หน้าแรก (Home Screen) ================= -->
   <div id="main-home-screen">
     <div class="home-title">W2W</div>
-    <button class="home-play-btn" onclick="openGame('w2w')">PLAY</button>
-    <button class="home-menu-icon-btn" onclick="goToHub()" title="Open Hub">☰</button>
+    <button class="home-play-btn" onclick="openGame('w2w'); startBgm();">PLAY</button>
+    <button class="home-menu-icon-btn" onclick="goToHub(); startBgm();" title="Open Hub">☰</button>
   </div>
 
   <!-- ================= หน้า HUB (Menu) ================= -->
@@ -195,6 +195,7 @@
     <div class="top-right-btns">
       <button class="top-btn" id="exit-fullscreen-btn" title="Exit Fullscreen">✕</button>
       <button class="top-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
+      <button class="top-btn" id="toggle-music-btn" title="Toggle Music">🎵</button>
     </div>
 
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
@@ -334,7 +335,40 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // ================= BACKGROUND MUSIC (kd.mp3) =================
+    const bgMusic = new Audio('kd.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = 0.4;
+    let isMusicPlaying = false;
+
+    function startBgm() {
+      if (!isMusicPlaying) {
+        bgMusic.play().then(() => {
+          isMusicPlaying = true;
+          const toggleMusicBtn = document.getElementById('toggle-music-btn');
+          if(toggleMusicBtn) toggleMusicBtn.style.opacity = '1';
+        }).catch(err => {});
+      }
+    }
+
+    const toggleMusicBtn = document.getElementById('toggle-music-btn');
+    if(toggleMusicBtn) {
+      toggleMusicBtn.addEventListener('click', () => {
+        if (isMusicPlaying) {
+          bgMusic.pause();
+          isMusicPlaying = false;
+          toggleMusicBtn.style.opacity = '0.5';
+        } else {
+          bgMusic.play().then(() => {
+            isMusicPlaying = true;
+            toggleMusicBtn.style.opacity = '1';
+          }).catch(err => {});
+        }
+      });
+    }
+
     function openGame(gameName) {
+      startBgm();
       document.getElementById('main-home-screen').style.display = 'none';
       document.getElementById('hub-screen').style.display = 'none';
       document.getElementById('w2w-game-view').style.display = 'none';
@@ -358,6 +392,7 @@
     }
 
     function goToHub() {
+      startBgm();
       document.getElementById('main-home-screen').style.display = 'none';
       document.getElementById('w2w-game-view').style.display = 'none';
       document.getElementById('cat-game-view').style.display = 'none';
@@ -472,6 +507,7 @@
     });
 
     initialBtn.addEventListener('click', () => {
+      startBgm();
       initialBtn.style.display = 'none';
       escapeBtn.style.display = 'block';
       escapeBtn.style.top = "60%"; escapeBtn.style.left = "50%"; escapeBtn.style.transform = "translate(-50%, -50%)";
@@ -479,6 +515,7 @@
     });
 
     window.addEventListener('click', () => { 
+      startBgm();
       if(document.getElementById('w2w-game-view').style.display === 'flex' && gameOverScreen.style.display !== 'flex') {
         input.focus();
       }
