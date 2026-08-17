@@ -116,7 +116,7 @@
     .hud { position: absolute; top: 25px; left: 25px; font-size: 18px; letter-spacing: 2px; font-weight: 600; }
 
     .top-right-btns {
-      position: absolute; top: 20px; right: 25px; display: flex; gap: 10px; z-index: 10;
+      position: absolute; top: 20px; right: 85px; display: flex; gap: 10px; z-index: 10;
     }
     .top-btn {
       background: rgba(255, 255, 255, 0.05);
@@ -128,17 +128,18 @@
     }
     .top-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: #4ade80; color: #4ade80; }
 
-    /* ปุ่มเมนูรวมขวาล่างสำหรับ W2W */
+    /* ปุ่มเมนูสไตล์มินิมอล (ขวาบนสุด) */
     .menu-float-btn {
-      position: absolute; bottom: 25px; right: 25px;
-      background: rgba(74, 222, 128, 0.1);
-      border: 1px solid rgba(74, 222, 128, 0.3);
-      color: #4ade80; padding: 10px 20px; border-radius: 8px;
-      font-size: 1rem; font-weight: 700; cursor: pointer; z-index: 10;
-      font-family: 'Rajdhani', sans-serif; letter-spacing: 2px;
+      position: absolute; top: 20px; right: 25px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0; width: 42px; height: 42px; border-radius: 8px;
+      font-size: 20px; font-weight: 700; cursor: pointer; z-index: 10;
+      display: flex; justify-content: center; align-items: center;
+      font-family: 'Rajdhani', sans-serif;
       transition: all 0.2s ease;
     }
-    .menu-float-btn:hover { background: #4ade80; color: #0d0f12; box-shadow: 0 0 15px rgba(74, 222, 128, 0.4); }
+    .menu-float-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: #4ade80; color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3); }
 
     .game-container {
       text-align: center; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 600px;
@@ -223,8 +224,8 @@
       <button class="top-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
     </div>
 
-    <!-- ปุ่มเมนูรวมขวาล่าง -->
-    <button class="menu-float-btn" onclick="goToHub()">☰ MENU</button>
+    <!-- ปุ่มเมนูไอคอน ☰ มุมขวาบน -->
+    <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
 
     <div class="game-container">
       <div class="history" id="status-msg">System Ready.</div>
@@ -252,7 +253,7 @@
 
   <!-- ================= CAT DENTIST VIEW ================= -->
   <div id="cat-game-view">
-    <button class="menu-float-btn" style="top: 25px; left: 25px; bottom: auto; right: auto;" onclick="goToHub()">← MENU</button>
+    <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
     <div style="font-size: 3rem; font-weight: 700; color: #4ade80; letter-spacing: 4px;">CAT DENTIST</div>
     <div class="history" id="cat-status-msg">จิ้มฟันแมวทีละซี่ ระวังโดนงับ!</div>
 
@@ -301,7 +302,7 @@
     }
 
 
-    // --- โค้ดเกม W2W (สถานะ W2W จะถูกเก็บไว้ในตัวแปรนี้ ไม่หายเวลาสลับหน้า) ---
+    // --- โค้ดเกม W2W ---
     let streak = 0;
     let lives = 5;
     let lastWord = "";
