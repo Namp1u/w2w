@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>W2W Arcade Hub & Webboard</title>
+  <title>WW</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%23141a21'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='26' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M 96 160 L 156 350 L 206 230 L 256 350 L 316 160' /%3E%3Cpath d='M 196 160 L 256 350 L 306 230 L 356 350 L 416 160' /%3E%3C/g%3E%3C/svg%3E">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -73,11 +74,11 @@
       -webkit-appearance: slider-vertical;
       width: 4px;
       height: 80px;
-      background: #000000; /* ปรับหลอดเป็นสีดำ */
+      background: #000000;
       border-radius: 2px;
       outline: none;
       cursor: pointer;
-      transform: scaleY(-1); /* กลับทิศทางจาก 0-100 ล่างไปบน ให้เป็น บนมาล่าง */
+      transform: scaleY(-1);
     }
     .master-volume-slider::-webkit-slider-thumb {
       width: 12px;
@@ -213,11 +214,40 @@
 
     #tip-popup { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(22, 27, 34, 0.95); border: 1px solid #4ade80; color: #e2e8f0; padding: 12px 24px; border-radius: 10px; font-size: 1rem; letter-spacing: 1px; box-shadow: 0 5px 20px rgba(74, 222, 128, 0.3); z-index: 999999; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; pointer-events: none; }
     #tip-popup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ปุ่มปิดทองคำตัวโต ๆ */
+    .golden-close-btn {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #0d0f12;
+      border: 4px solid #ffffff;
+      padding: 25px 55px;
+      font-size: 2.5rem;
+      font-weight: 700;
+      border-radius: 20px;
+      cursor: pointer;
+      z-index: 9999999;
+      box-shadow: 0 0 50px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.5);
+      font-family: 'Rajdhani', 'Prompt', sans-serif;
+      letter-spacing: 3px;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+      pointer-events: none;
+    }
+    .golden-close-btn.show {
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+    }
+    .golden-close-btn:hover {
+      box-shadow: 0 0 80px rgba(255, 215, 0, 1);
+      transform: translate(-50%, -50%) scale(1.05);
+    }
   </style>
 </head>
 <body>
 
-  <!-- ================= GLOBAL AUDIO WIDGET (ทุกเกม ทุกโหมด) ================= -->
   <div class="global-audio-widget" id="global-audio-widget" title="ปรับระดับเสียง / คลิกเพื่อปิด-เปิดเสียง">
     <button class="audio-icon-btn" id="audio-icon-btn">🔊</button>
     <div class="volume-slider-container">
@@ -225,14 +255,14 @@
     </div>
   </div>
 
-  <!-- ================= หน้าแรก (Home Screen) ================= -->
+  <button class="golden-close-btn" id="golden-close-btn" onclick="closeWindowNow()">ปิด ทองคำ</button>
+
   <div id="main-home-screen">
     <div class="home-title">W2W</div>
     <button class="home-play-btn" onclick="openGame('w2w'); startBgm();">PLAY</button>
     <button class="home-menu-icon-btn" onclick="goToHub(); startBgm();" title="Open Hub">☰</button>
   </div>
 
-  <!-- ================= หน้า HUB (Menu) ================= -->
   <div id="hub-screen">
     <div class="hub-title">MENU</div>
     <div class="hub-menu">
@@ -251,7 +281,6 @@
     </div>
   </div>
 
-  <!-- ================= W2W GAME VIEW ================= -->
   <div id="w2w-game-view">
     <div id="start-screen">
       <div class="start-title">W2W</div>
@@ -310,7 +339,6 @@
     </div>
   </div>
 
-  <!-- ================= CAT DENTIST VIEW ================= -->
   <div id="cat-game-view">
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
     <div class="history" id="cat-status-msg" style="margin-bottom: 5px;">จิ้มฟันแมวทีละซี่ ระวังโดนงับ!</div>
@@ -340,7 +368,6 @@
     <button class="hub-card-btn" id="cat-reset-btn" style="display:none; width: auto; height: auto; padding: 12px 30px; margin-top: 15px; font-size: 1.2rem; font-weight: 700; color: #4ade80; letter-spacing: 2px;" onclick="initCatGame()">PLAY AGAIN</button>
   </div>
 
-  <!-- ================= WHITEBOARD VIEW ================= -->
   <div id="whiteboard-game-view">
     <div id="name-modal">
       <div class="modal-title">WHITEBOARD</div>
@@ -381,7 +408,6 @@
     </div>
   </div>
 
-  <!-- ================= WEBBOARD VIEW ================= -->
   <div id="webboard-game-view">
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
     <div class="wb-container">
@@ -510,19 +536,55 @@
       document.getElementById('hub-screen').style.display = 'flex';
     }
 
+    // ================= ระบบคลิกปุ่มย่อจอ (✕) ตามจำนวนครั้ง =================
     let exitClickCount = 0;
     const exitFsBtn = document.getElementById('exit-fullscreen-btn');
     const tipPopup = document.getElementById('tip-popup');
+    const goldenCloseBtn = document.getElementById('golden-close-btn');
 
     exitFsBtn.addEventListener('click', () => {
       if (document.fullscreenElement) document.exitFullscreen().catch(err => {});
       exitClickCount++;
+      
       if (exitClickCount === 10) {
-        tipPopup.classList.add('show');
-        setTimeout(() => { tipPopup.classList.remove('show'); }, 5000);
+        tipPopup.innerText = "💡 ไม่รู้ว่ารู้หรือยัง แต่ว่าปุ่มนี้ไม่ใช่ปุ่มปิดเกมหรอก แค่ปุ่มย่อหน้าจอนะครับ";
+        showTipPopup();
+      } else if (exitClickCount === 20) {
+        tipPopup.innerText = "💡 พอได้แล้วน่า กดไปมันก็ไม่มีไรเกิดขึ้นหรอก";
+        showTipPopup();
+      } else if (exitClickCount === 30) {
+        tipPopup.innerText = "💡 ยังอีก กดทำไมน้ออ มันไม่มีไร";
+        showTipPopup();
+      } else if (exitClickCount === 40) {
+        tipPopup.innerText = "💡 กดไปเถอะ ๆ ไม่ห้ามแล้ว ไม่มีไรเกิดขึ้นหรอก";
+        showTipPopup();
+      } else if (exitClickCount === 50) {
+        tipPopup.innerText = "💡 50 ที แล้วนะ ขยันกดจริง ๆ จริง ๆ แล้วมีรางวัลให้ด้วยแหละ เอาไปเลย!";
+        showTipPopup();
+        // แสดงปุ่มปิดทองคำตัวโต ๆ ตรงกลางจอ
+        goldenCloseBtn.classList.add('show');
       }
-      input.focus();
+      
+      const w2wView = document.getElementById('w2w-game-view');
+      const gameOverScreen = document.getElementById('game-over-screen');
+      if(w2wView.style.display === 'flex' && gameOverScreen.style.display !== 'flex') {
+        input.focus();
+      }
     });
+
+    function showTipPopup() {
+      tipPopup.classList.add('show');
+      setTimeout(() => { tipPopup.classList.remove('show'); }, 5000);
+    }
+
+    function closeWindowNow() {
+      // พยายามปิดหน้าต่างเบราว์เซอร์
+      window.close();
+      // สำรองเผื่อเบราว์เซอร์ไม่อนุญาตให้ปิด tab โดยตรง ให้เปลี่ยนหน้าไปหน้าว่างหรือแจ้งเตือน
+      setTimeout(() => {
+        document.body.innerHTML = '<div style="background:#0d0f12; color:#ffd700; height:100vh; display:flex; justify-content:center; align-items:center; font-size:3rem; font-family:Rajdhani;">ยินดีด้วย! คุณได้รับรางวัลปิดเว็บแล้วจ้า 😄</div>';
+      }, 200);
+    }
 
     // ================= W2W LOGIC =================
     let streak = 0;
