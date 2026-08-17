@@ -110,6 +110,33 @@
       font-weight: 600;
     }
 
+    .exit-fs-btn {
+      position: absolute;
+      top: 20px;
+      right: 75px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      width: 42px;
+      height: 42px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .exit-fs-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.9);
+      transform: scale(1.05);
+    }
+
     .trophy-btn {
       position: absolute;
       top: 20px;
@@ -262,6 +289,7 @@
     <span id="lives">❤️❤️❤️❤️❤️</span>
   </div>
 
+  <button class="exit-fs-btn" id="exit-fullscreen-btn" title="Exit Fullscreen">✕</button>
   <button class="trophy-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
 
   <div class="game-container">
@@ -288,7 +316,6 @@
   </div>
 
   <script>
-    // --- ตั้งค่าเชื่อมต่อ Supabase ของคุณตรงนี้ ---
     const SUPABASE_URL = 'https://nafycmwlhczpdgscbeep.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
     
@@ -322,11 +349,19 @@
       const bestCounterEl = document.getElementById('best-counter');
       const topScoresListEl = document.getElementById('top-scores-list');
       const trophyBtn = document.getElementById('toggle-leaderboard');
+      const exitFsBtn = document.getElementById('exit-fullscreen-btn');
       const leaderboardContainer = document.getElementById('leaderboard-container');
 
       const startScreen = document.getElementById('start-screen');
       const initialBtn = document.getElementById('initial-btn');
       const escapeBtn = document.getElementById('escape-btn');
+
+      exitFsBtn.addEventListener('click', () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(err => {});
+        }
+        input.focus();
+      });
 
       trophyBtn.addEventListener('click', () => {
         const isHidden = leaderboardContainer.style.display !== 'block';
@@ -335,7 +370,6 @@
         input.focus();
       });
 
-      // ดึงคะแนนออนไลน์ Top 25 จาก Supabase
       async function fetchLeaderboard() {
         const { data, error } = await _supabase
           .from('leaderboard')
@@ -379,7 +413,6 @@
         let playerName = prompt(`GAME OVER! Final Streak: ${currentStreak}\nEnter your name for Online Leaderboard:`, "Player");
         if (!playerName || playerName.trim() === "") playerName = "Anonymous";
         
-        // ส่งคะแนนขึ้นฐานข้อมูลออนไลน์ทันที
         await _supabase.from('leaderboard').insert([
           { name: playerName.trim().substring(0, 12), score: currentStreak }
         ]);
