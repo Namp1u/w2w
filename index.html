@@ -48,6 +48,25 @@
       font-weight: 600;
     }
 
+    /* ปุ่มรูปถ้วยรางวัลมุมขวาบน */
+    .trophy-btn {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    .trophy-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
+    }
+
     .game-container {
       text-align: center;
       z-index: 1;
@@ -87,12 +106,14 @@
       text-transform: lowercase;
     }
     
+    /* ขีดกระพริบเปลี่ยนเป็นสีขาว */
     .cursor {
       display: inline-block;
       width: 12px;
       height: 45px;
-      background-color: #4ade80;
+      background-color: #ffffff;
       margin-left: 4px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
       animation: blink 0.8s infinite;
     }
     @keyframes blink {
@@ -130,7 +151,7 @@
       text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
     }
 
-    /* Leaderboard ด้านล่างสุดแบบมินิมอล */
+    /* Leaderboard ด้านล่างสุดแบบซ่อนค่าเริ่มต้น */
     .leaderboard-box {
       margin-top: 10px;
       font-size: 0.9rem;
@@ -139,6 +160,7 @@
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding-top: 10px;
       width: 80%;
+      display: none; /* ซ่อนไว้ก่อนตามคำขอ */
     }
     .leaderboard-title {
       font-weight: 600;
@@ -167,6 +189,9 @@
     <span id="lives">❤️❤️❤️❤️❤️</span>
   </div>
 
+  <!-- ปุ่มรูปถ้วยรางวัลสำหรับเปิด/ปิด Leaderboard -->
+  <button class="trophy-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
+
   <div class="game-container">
     
     <!-- ข้อความสถานะเกม -->
@@ -184,8 +209,8 @@
       <div class="streak-item">BEST <span class="best-num" id="best-counter">0</span></div>
     </div>
 
-    <!-- Leaderboard มินิมอล -->
-    <div class="leaderboard-box">
+    <!-- Leaderboard มินิมอล (ซ่อนอยู่ จะแสดงเมื่อกดปุ่ม 🏆) -->
+    <div class="leaderboard-box" id="leaderboard-container">
       <div class="leaderboard-title">TOP STREAKS (LOCAL LEADERBOARD)</div>
       <div id="top-scores">1. --- (0) | 2. --- (0) | 3. --- (0)</div>
     </div>
@@ -202,7 +227,6 @@
       const popSound = new Audio('pop.wav');
       popSound.volume = 0.5;
 
-      // เสียง Bass Drop ตอนตาย (ปรับลดเสียงลงเหลือ 0.35 เบาลงครึ่งหนึ่ง)
       const deathSound = new Audio('bass_drop.mp3');
       deathSound.volume = 0.35;
 
@@ -214,7 +238,6 @@
       const usedWords = new Set();
       let dictionary = new Set();
 
-      // ระบบบันทึก Leaderboard แบบมีชื่อผู้เล่นผ่าน LocalStorage
       let leaderboard = JSON.parse(localStorage.getItem('w2w_named_leaderboard')) || [
         {name: "---", score: 0},
         {name: "---", score: 0},
@@ -230,8 +253,19 @@
       const streakCounterEl = document.getElementById('streak-counter');
       const bestCounterEl = document.getElementById('best-counter');
       const topScoresEl = document.getElementById('top-scores');
+      const trophyBtn = document.getElementById('toggle-leaderboard');
+      const leaderboardContainer = document.getElementById('leaderboard-container');
 
-      // อัปเดตการแสดงผล Leaderboard เริ่มต้น
+      // ระบบกดปุ่ม 🏆 เพื่อเปิด/ปิดตาราง Leaderboard
+      trophyBtn.addEventListener('click', () => {
+        if (leaderboardContainer.style.display === 'block') {
+          leaderboardContainer.style.display = 'none';
+        } else {
+          leaderboardContainer.style.display = 'block';
+        }
+        input.focus(); // โฟกัสกลับมาที่ช่องพิมพ์เกมเหมือนเดิม
+      });
+
       updateLeaderboardDisplay();
 
       function updateLeaderboardDisplay() {
@@ -246,13 +280,12 @@
         
         leaderboard.push({ name: playerName.trim().substring(0, 10), score: currentStreak });
         leaderboard.sort((a, b) => b.score - a.score);
-        leaderboard = leaderboard.slice(0, 3); // เก็บแค่ 3 อันดับสูงสุด
+        leaderboard = leaderboard.slice(0, 3);
         
         localStorage.setItem('w2w_named_leaderboard', JSON.stringify(leaderboard));
         updateLeaderboardDisplay();
       }
 
-      // ระบบสลับลายน้ำด้านหลังทุกๆ 3 วินาที
       let showStreakBg = false;
       setInterval(() => {
         watermarkEl.style.opacity = 0;
@@ -263,7 +296,6 @@
         }, 250);
       }, 3000);
 
-      // ดึงพจนานุกรม JSON
       fetch('words_dictionary.json')
         .then(res => res.json())
         .then(data => {
@@ -277,7 +309,6 @@
           statusEl.className = "history error-msg";
         });
 
-      // ควบคุมการพิมพ์: ล็อกตัวอักษรแรกสุดให้ติดค้างอยู่ในจอพิมพ์บรรทัดเดียวกัน
       input.addEventListener('input', () => {
         let val = input.value.toLowerCase();
         
@@ -290,12 +321,10 @@
         typedTextEl.innerText = input.value;
       });
 
-      // คลิกตรงไหนของหน้าจอก็โฟกัสช่องพิมพ์เสมอ
       window.addEventListener('click', () => {
         input.focus();
       });
 
-      // ระบบส่งคำเมื่อกด Enter
       form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -309,19 +338,16 @@
         const currentWord = input.value.trim().toLowerCase();
         if (!currentWord || currentWord === requiredPrefix) return;
 
-        // ตรวจสอบความถูกต้องใน Dictionary
         if (dictionary.size > 0 && !dictionary.has(currentWord)) {
           handleWrong(`'${currentWord.toUpperCase()}' is unknown`);
           return;
         }
 
-        // ตรวจสอบคำซ้ำ
         if (usedWords.has(currentWord)) {
           handleWrong("Word already used");
           return;
         }
 
-        // ตรวจสอบตัวอักษรเชื่อมคำ
         if (lastWord !== "") {
           const reqChar = lastWord.slice(-1);
           if (currentWord[0] !== reqChar) {
@@ -330,7 +356,6 @@
           }
         }
 
-        // ผ่านเงื่อนไข: สำเร็จ!
         popSound.currentTime = 0;
         popSound.play().catch(e => {});
 
@@ -339,7 +364,6 @@
         streak++;
         streakCounterEl.innerText = streak;
 
-        // เช็คอัปเดต Best ทันทีระหว่างเล่นหากทำลายสถิติอันดับ 1
         if (streak > leaderboard[0].score) {
           bestCounterEl.innerText = streak;
         }
@@ -354,7 +378,6 @@
         typedTextEl.innerText = requiredPrefix;
       });
 
-      // ระบบเมื่อพิมพ์ผิดพลาด
       function handleWrong(msg) {
         lives--;
         livesEl.innerText = "❤️".repeat(Math.max(0, lives)) + "🖤".repeat(5 - Math.max(0, lives));
@@ -366,11 +389,9 @@
         typedTextEl.innerText = requiredPrefix;
 
         if (lives <= 0) {
-          // เล่นเสียง Bass Drop ตอนตาย (เสียงเบาลงครึ่งหนึ่ง)
           deathSound.currentTime = 0;
           deathSound.play().catch(e => {});
 
-          // เรียกหน้าต่างกรอกชื่อบันทึกคะแนนลง Leaderboard
           setTimeout(() => {
             checkAndSaveScore(streak);
             resetGame();
@@ -378,7 +399,6 @@
         }
       }
 
-      // รีเซ็ตเกมใหม่ทั้งหมดเมื่อหัวใจหมด
       function resetGame() {
         streak = 0;
         lives = 5;
@@ -396,7 +416,6 @@
 
     })();
 
-    // ป้องกันคลิกขวา
     document.addEventListener('contextmenu', event => event.preventDefault());
   </script>
 </body>
