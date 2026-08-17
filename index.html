@@ -22,6 +22,77 @@
       position: relative;
     }
 
+    /* --- GLOBAL AUDIO WIDGET (VERTICAL & CLEAN LINE) --- */
+    .global-audio-widget {
+      position: fixed;
+      top: 20px;
+      right: 80px;
+      z-index: 100000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .audio-icon-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border-radius: 8px;
+      width: 42px;
+      height: 42px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+    .audio-icon-btn:hover {
+      border-color: #4ade80;
+      color: #4ade80;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+    }
+    .volume-slider-container {
+      position: absolute;
+      top: 45px;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: height 0.3s ease, opacity 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 6px;
+    }
+    .global-audio-widget:hover .volume-slider-container {
+      height: 95px;
+      opacity: 1;
+    }
+    .master-volume-slider {
+      -webkit-appearance: slider-vertical;
+      width: 4px;
+      height: 80px;
+      background: #000000; /* ปรับหลอดเป็นสีดำ */
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      transform: scaleY(-1); /* กลับทิศทางจาก 0-100 ล่างไปบน ให้เป็น บนมาล่าง */
+    }
+    .master-volume-slider::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    .master-volume-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      background: #4ade80;
+    }
+
     #main-home-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d0f12; z-index: 99997; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 25px; }
     .home-title { font-size: 7rem; font-weight: 700; letter-spacing: 10px; color: #4ade80; text-shadow: 0 0 35px rgba(74, 222, 128, 0.4); text-transform: uppercase; font-family: 'Rajdhani', sans-serif; }
     .home-play-btn { background: transparent; border: 2px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; padding: 12px 40px; font-size: 1.4rem; font-weight: 600; cursor: pointer; border-radius: 8px; letter-spacing: 4px; transition: all 0.2s ease; }
@@ -55,7 +126,7 @@
     .life-warning-banner.show-warning-1 { opacity: 1; color: #fbbf24; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(251, 191, 36, 0.5); font-family: 'Prompt', sans-serif; }
     @keyframes warning-pulse { 0% { opacity: 0.5; transform: translateX(-50%) scale(0.98); } 100% { opacity: 1; transform: translateX(-50%) scale(1.02); } }
 
-    .top-right-btns { position: absolute; top: 20px; right: 85px; display: flex; gap: 10px; z-index: 10; }
+    .top-right-btns { position: absolute; top: 20px; right: 140px; display: flex; gap: 10px; z-index: 10; }
     .top-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; width: 42px; height: 42px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
     .top-btn:hover { background: rgba(255,255,255,0.15); border-color: #4ade80; color: #4ade80; }
     .menu-float-btn { position: absolute; top: 20px; right: 25px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; width: 42px; height: 42px; border-radius: 8px; font-size: 20px; cursor: pointer; z-index: 10; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
@@ -146,6 +217,14 @@
 </head>
 <body>
 
+  <!-- ================= GLOBAL AUDIO WIDGET (ทุกเกม ทุกโหมด) ================= -->
+  <div class="global-audio-widget" id="global-audio-widget" title="ปรับระดับเสียง / คลิกเพื่อปิด-เปิดเสียง">
+    <button class="audio-icon-btn" id="audio-icon-btn">🔊</button>
+    <div class="volume-slider-container">
+      <input type="range" class="master-volume-slider" id="master-volume-slider" min="0" max="1" step="0.01" value="0.4">
+    </div>
+  </div>
+
   <!-- ================= หน้าแรก (Home Screen) ================= -->
   <div id="main-home-screen">
     <div class="home-title">W2W</div>
@@ -195,7 +274,6 @@
     <div class="top-right-btns">
       <button class="top-btn" id="exit-fullscreen-btn" title="Exit Fullscreen">✕</button>
       <button class="top-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
-      <button class="top-btn" id="toggle-music-btn" title="Toggle Music">🎵</button>
     </div>
 
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
@@ -335,37 +413,68 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ================= BACKGROUND MUSIC (kd.mp3) =================
+    // ================= GLOBAL AUDIO & VOLUME CONTROL SYSTEM =================
+    let masterVolume = 0.4;
+    let previousVolume = 0.4;
+    let isMuted = false;
+    let isMusicPlaying = false;
+
     const bgMusic = new Audio('kd.mp3');
     bgMusic.loop = true;
-    bgMusic.volume = 0.4;
-    let isMusicPlaying = false;
+    bgMusic.volume = masterVolume;
+
+    const popSound = new Audio('pop.wav'); 
+    const deathSound = new Audio('bass_drop.mp3'); 
+    const warningSound = new Audio('pop.wav'); 
+
+    const audioIconBtn = document.getElementById('audio-icon-btn');
+    const masterVolumeSlider = document.getElementById('master-volume-slider');
 
     function startBgm() {
       if (!isMusicPlaying) {
         bgMusic.play().then(() => {
           isMusicPlaying = true;
-          const toggleMusicBtn = document.getElementById('toggle-music-btn');
-          if(toggleMusicBtn) toggleMusicBtn.style.opacity = '1';
         }).catch(err => {});
       }
     }
 
-    const toggleMusicBtn = document.getElementById('toggle-music-btn');
-    if(toggleMusicBtn) {
-      toggleMusicBtn.addEventListener('click', () => {
-        if (isMusicPlaying) {
-          bgMusic.pause();
-          isMusicPlaying = false;
-          toggleMusicBtn.style.opacity = '0.5';
-        } else {
-          bgMusic.play().then(() => {
-            isMusicPlaying = true;
-            toggleMusicBtn.style.opacity = '1';
-          }).catch(err => {});
-        }
-      });
+    function updateAudioVolumes() {
+      const effectiveVol = isMuted ? 0 : masterVolume;
+      bgMusic.volume = effectiveVol;
+      popSound.volume = Math.min(1, effectiveVol * 1.25);
+      deathSound.volume = Math.min(1, effectiveVol * 0.875);
+      warningSound.volume = Math.min(1, effectiveVol * 2);
+
+      if (isMuted || masterVolume === 0) {
+        audioIconBtn.innerText = '🔇';
+      } else if (masterVolume < 0.5) {
+        audioIconBtn.innerText = '🔉';
+      } else {
+        audioIconBtn.innerText = '🔊';
+      }
     }
+
+    audioIconBtn.addEventListener('click', () => {
+      startBgm();
+      isMuted = !isMuted;
+      if (!isMuted && masterVolume === 0) {
+        masterVolume = 0.4;
+        masterVolumeSlider.value = masterVolume;
+      }
+      updateAudioVolumes();
+    });
+
+    masterVolumeSlider.addEventListener('input', (e) => {
+      startBgm();
+      masterVolume = parseFloat(e.target.value);
+      if (masterVolume > 0) {
+        isMuted = false;
+      }
+      previousVolume = masterVolume > 0 ? masterVolume : previousVolume;
+      updateAudioVolumes();
+    });
+
+    updateAudioVolumes();
 
     function openGame(gameName) {
       startBgm();
@@ -424,10 +533,6 @@
     let dictionary = new Set();
     let escapeCount = 0;
     let leaderboard = [];
-
-    const popSound = new Audio('pop.wav'); popSound.volume = 0.5;
-    const deathSound = new Audio('bass_drop.mp3'); deathSound.volume = 0.35;
-    const warningSound = new Audio('pop.wav'); warningSound.volume = 0.8;
 
     const form = document.getElementById('game-form');
     const input = document.getElementById('word-input');
