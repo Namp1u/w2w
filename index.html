@@ -374,7 +374,7 @@
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
 
     <div class="game-container">
-      <div class="history" id="status-msg">System Ready.</div>
+      <div class="history" id="status-msg">Type any word to start นะจ๊ะ</div>
       <div class="arcade-input-screen" id="arcade-screen">
         <span id="typed-text"></span><span class="cursor"></span>
       </div>
@@ -518,6 +518,7 @@
     const popSound = new Audio('pop.wav'); 
     const deathSound = new Audio('bass_drop.mp3'); 
     const warningSound = new Audio('pop.wav'); 
+    const operaSound = new Audio('https://www.soundjay.com/human/applause-01.mp3');
 
     const audioIconBtn = document.getElementById('audio-icon-btn');
     const masterVolumeSlider = document.getElementById('master-volume-slider');
@@ -536,6 +537,7 @@
       popSound.volume = Math.min(1, effectiveVol * 1.25);
       deathSound.volume = Math.min(1, effectiveVol * 0.875);
       warningSound.volume = Math.min(1, effectiveVol * 2);
+      operaSound.volume = effectiveVol;
 
       if (isMuted || masterVolume === 0) {
         audioIconBtn.innerText = '🔇';
@@ -671,6 +673,7 @@
     const leaderboardContainer = document.getElementById('leaderboard-container');
     const startScreen = document.getElementById('start-screen');
     const initialBtn = document.getElementById('initial-btn');
+    const videoContainer = document.getElementById('video-container');
 
     const gameOverScreen = document.getElementById('game-over-screen');
     const finalStreakDisplay = document.getElementById('final-streak-display');
@@ -722,16 +725,49 @@
       .then(res => res.json())
       .then(data => { dictionary = new Set(Object.keys(data)); });
 
+    // W2W Input & Easter Eggs Logic
     input.addEventListener('input', () => {
-      let val = input.value.toUpperCase();
+      let val = input.value;
+      let upperVal = val.trim().toUpperCase();
+
+      // เช็กภาษาไทย
+      const thaiRegex = /[\u0E00-\u0E7F]/;
+      if (thaiRegex.test(val)) {
+        statusEl.innerText = "โปรด Type in อังกฤษ นะครับ";
+        statusEl.style.color = "#ff4d4d";
+        
+        operaSound.currentTime = 0;
+        operaSound.play().catch(err => {});
+        
+        input.value = val.replace(/[\u0E00-\u0E7F]/g, '');
+        return;
+      }
+
+      // Easter Egg "JUNE"
+      if (upperVal === 'JUNE') {
+        videoContainer.innerHTML = `
+          <iframe 
+            width="400" 
+            height="225" 
+            src="https://www.youtube.com/embed/lg5WKsVnEA4?autoplay=1" 
+            title="June Easter Egg" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        `;
+        videoContainer.style.display = 'block';
+      }
+
+      let formattedVal = val.toUpperCase();
       if (requiredPrefix !== "") {
         let reqUpper = requiredPrefix.toUpperCase();
-        if (!val.startsWith(reqUpper)) {
-          input.value = reqUpper + val.replace(reqUpper, '');
-          val = input.value;
+        if (!formattedVal.startsWith(reqUpper)) {
+          input.value = reqUpper + formattedVal.replace(reqUpper, '');
+          formattedVal = input.value;
         }
       }
-      typedTextEl.innerText = val;
+      typedTextEl.innerText = formattedVal;
     });
 
     initialBtn.addEventListener('click', () => {
@@ -834,6 +870,7 @@
       streak++;
       streakCounterEl.innerText = streak;
       statusEl.innerText = `ACCEPTED: ${currentWordUpper}`;
+      statusEl.style.color = "#a0aec0";
       requiredPrefix = currentWord.slice(-1);
       input.value = requiredPrefix.toUpperCase();
       typedTextEl.innerText = requiredPrefix.toUpperCase();
@@ -1073,6 +1110,7 @@
       currentPanelStrokes.forEach(stroke => drawStrokeObject(stroke));
     }
 
+    // Canvas Mouse Events
     canvas.addEventListener('mousedown', (e) => {
       if (nameModal.style.display !== 'none') return;
       drawing = true;
@@ -1105,6 +1143,70 @@
     });
 
     window.addEventListener('mouseup', async () => {
+      if (!drawing) return;
+      drawing = false;
+
+      if (currentPoints.length > 1) {
+        const now = new Date();
+        const strokeObj = {
+          points: currentPoints,
+          color: colorPicker.value,
+          size: sizePicker.value,
+          mode: currentMode,
+          name: myName,
+          date: now.toLocaleDateString(),
+          time: now.toLocaleTimeString(),
+          grid_x: currentGridX,
+          grid_y: currentGridY
+        };
+
+        const { data } = await _supabase.from('whiteboard_strokes').insert([{ stroke_json: strokeObj }]).select();
+        if (data && data.length > 0) {
+          strokeObj.db_id = data[0].id;
+        }
+        allStrokes.push(strokeObj);
+        redrawCanvas();
+      }
+      currentPoints = [];
+    });
+
+    // Canvas Touch Events
+    canvas.addEventListener('touchstart', (e) => {
+      if (nameModal.style.display !== 'none') return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      drawing = true;
+      const rect = canvas.getBoundingClientRect();
+      currentPoints = [{ x: touch.clientX - rect.left, y: touch.clientY - rect.top }];
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (!drawing) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const newX = touch.clientX - rect.left;
+      const newY = touch.clientY - rect.top;
+      currentPoints.push({ x: newX, y: newY });
+
+      redrawCanvas();
+      const tempStroke = {
+        points: currentPoints,
+        color: colorPicker.value,
+        size: sizePicker.value,
+        mode: currentMode,
+        name: myName,
+        grid_x: currentGridX,
+        grid_y: currentGridY
+      };
+      drawStrokeObject(tempStroke);
+
+      ctx.fillStyle = colorPicker.value;
+      ctx.font = '12px Prompt';
+      ctx.fillText(myName, newX + 10, newY - 5);
+    }, { passive: false });
+
+    window.addEventListener('touchend', async () => {
       if (!drawing) return;
       drawing = false;
 
@@ -1239,7 +1341,6 @@
 
     fetchStrokesFromDB();
   </script>
-
-</script>
+<div id="video-container" style="display: none; position: absolute; right: 20px; top: 20px; z-index: 100; box-shadow: 0 0 15px rgba(0,0,0,0.5);"></div>
 </body>
 </html>
