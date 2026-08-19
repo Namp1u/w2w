@@ -31,6 +31,98 @@
       transition: background-color 0.5s ease;
     }
 
+    /* ================= SPLASH SCREEN (หน้าแรกสุด) ================= */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0d0f12;
+      z-index: 9999999; /* สูงที่สุดเพื่อบังหน้าเว็บจริงไว้ก่อน */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+      overflow: hidden;
+    }
+    
+    .splash-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://media.discordapp.net/attachments/1335747244003033088/1539761640411496459/Gemini_Generated_Image_sm9435sm9435sm94.jfif?ex=6a877e46&is=6a862cc6&hm=0898f715fddefdac938ab66b8a6a3ad0e001f1e25707a2d6d2a7a70decca5830&=&format=webp&width=1024&height=559');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.15; /* ทำให้พื้นหลังมืดลงเพื่อให้รูปหลักเด่น */
+      z-index: 1;
+      filter: blur(8px);
+      transform: scale(1.1);
+    }
+
+    .splash-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-image {
+      width: min(85vw, 450px);
+      max-height: 55vh;
+      object-fit: contain;
+      animation: splash-float 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 25px rgba(74, 222, 128, 0.4));
+    }
+
+    .splash-title {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(3.5rem, 15vw, 8rem);
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(74, 222, 128, 0.8);
+      font-family: 'Prompt', sans-serif;
+      pointer-events: none; /* ให้คลิกทะลุไปโดนคอนเทนเนอร์ */
+      letter-spacing: 5px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .splash-hint {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      letter-spacing: 5px;
+      color: #4ade80;
+      font-family: 'Rajdhani', sans-serif;
+      animation: blink-hint 1.5s infinite;
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+    }
+
+    .splash-hidden {
+      opacity: 0;
+      transform: scale(1.1); /* ซูมเข้าเล็กน้อยตอนเปลี่ยนหน้า */
+      pointer-events: none;
+    }
+
+    @keyframes splash-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    @keyframes blink-hint {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    /* ======================================================= */
+
     /* --- HELL / HARD MODE THEME --- */
     body.hell-mode {
       background-color: #1a0303 !important;
@@ -361,6 +453,17 @@
 </head>
 <body>
 
+  <!-- ================= SPLASH SCREEN ================= -->
+  <div id="splash-screen" onclick="enterSite()">
+    <div class="splash-bg"></div>
+    <div class="splash-content">
+      <img src="https://media.discordapp.net/attachments/1335747244003033088/1539761068820267028/Gemini_Generated_Image_sm9435sm9435sm94-removebg-preview.png?ex=6a877dbe&is=6a862c3e&hm=597f0e2ce5e6e602dcf2121d53ccfc282a37df09cca9263a7a39a905cdd9a61b&=&format=webp&quality=lossless" alt="ควายดอง Logo" class="splash-image">
+      <h1 class="splash-title">ควายดอง</h1>
+      <p class="splash-hint">CLICK TO ENTER</p>
+    </div>
+  </div>
+  <!-- ================================================= -->
+
   <button id="funny-btn" style="position: fixed; bottom: 20px; left: 20px; z-index: 99999; background: transparent; border: none; font-size: 24px; cursor: pointer;">🎵</button>
 
   <div id="video-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100000; justify-content:center; align-items:center;">
@@ -574,6 +677,29 @@
     const SUPABASE_URL = 'https://nafycmwlhczpdgscbeep.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ================= ฟังก์ชันเข้าสู่เว็บจากหน้า Splash Screen =================
+    function enterSite() {
+      const splash = document.getElementById('splash-screen');
+      
+      // ปลดล็อกระบบเสียง และเริ่มเล่นเพลงเมื่อผู้ใช้มีปฏิสัมพันธ์ (คลิกเข้าเว็บ)
+      unlockAudioContext();
+      if (!isMusicPlaying && !isHardMode) {
+        bgMusic.play().then(() => {
+          isMusicPlaying = true;
+        }).catch(err => {});
+      }
+      updateAudioVolumes(); // อัปเดตไอคอนเสียงให้ตรงกับสถานะปัจจุบัน
+      
+      // เริ่มแอนิเมชัน Fade-out และ Zoom
+      splash.classList.add('splash-hidden');
+      
+      // ลบ DOM element ออกหลังจากแสดง Transition เสร็จ (0.8s ตาม CSS)
+      setTimeout(() => {
+        splash.style.display = 'none';
+      }, 800);
+    }
+    // ====================================================================
 
     // ================= AUDIO CONTEXT & SYSTEM =================
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1762,24 +1888,7 @@
       if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
         ytPlayer.stopVideo();
       }
-    }
 
-    const funnyBtn = document.getElementById('funny-btn');
-    if (funnyBtn) {
-      funnyBtn.addEventListener('click', function() {
-        playVideo('https://youtu.be/n7XNd1zvH_8');
-      });
-    }
-    function closeVideoPopup() {
-      const overlay = document.getElementById('video-overlay');
-      if (overlay) {
-        overlay.style.display = 'none';
-      }
-      if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-        ytPlayer.stopVideo();
-      }
-
-     // --- เพิ่มโค้ดส่วนนี้เพื่อคืนค่าโฟกัสให้กับช่องพิมพ์ข้อความ ---
       const w2wView = document.getElementById('w2w-game-view');
       const gameOverScreen = document.getElementById('game-over-screen');
       if (w2wView.style.display === 'flex' && gameOverScreen.style.display !== 'flex') {
