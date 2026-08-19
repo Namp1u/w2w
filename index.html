@@ -15,14 +15,34 @@
       color: #e0e6ed; 
       font-family: 'Prompt', 'Rajdhani', sans-serif;
       height: 100vh; 
-      height: 100dvh; /* รองรับจอมือถือที่มีแถบ URL เด้งปิดเปิด */
+      height: 100dvh; 
       display: flex; 
       flex-direction: column; 
       justify-content: center; 
       align-items: center; 
       overflow: hidden; 
       position: relative;
-      touch-action: manipulation; /* ป้องกันการซูมหน้าจอสองครั้งบนมือถือ */
+      touch-action: manipulation; 
+      transition: background-color 0.5s ease;
+    }
+
+    /* --- HELL / HARD MODE THEME --- */
+    body.hell-mode {
+      background-color: #1a0303 !important;
+      animation: hell-bg-pulse 2s infinite alternate;
+    }
+    @keyframes hell-bg-pulse {
+      0% { box-shadow: inset 0 0 80px rgba(139, 0, 0, 0.4); }
+      100% { box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.6); }
+    }
+    body.hell-mode .watermark-bg {
+      color: #ff0000 !important;
+      opacity: 0.05 !important;
+      text-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+    }
+    body.hell-mode .arcade-input-screen {
+      color: #ff4d4d !important;
+      text-shadow: 0 0 25px rgba(255, 0, 0, 0.8) !important;
     }
 
     /* --- GLOBAL AUDIO WIDGET --- */
@@ -58,48 +78,45 @@
     }
     .volume-slider-container {
       position: absolute;
-      top: 40px;
+      top: 38px;
       height: 0;
       overflow: hidden;
       opacity: 0;
-      transition: height 0.3s ease, opacity 0.3s ease;
+      transition: height 0.2s ease, opacity 0.2s ease;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding-top: 6px;
+      padding-top: 8px;
+      background: rgba(13, 15, 18, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 0 0 8px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: none;
+      width: 38px;
+      left: 0;
     }
     .global-audio-widget:hover .volume-slider-container {
-      height: 95px;
+      height: 105px;
       opacity: 1;
     }
     .master-volume-slider {
       -webkit-appearance: slider-vertical;
-      width: 4px;
-      height: 80px;
+      width: 6px;
+      height: 85px;
       background: #000000;
-      border-radius: 2px;
+      border-radius: 3px;
       outline: none;
       cursor: pointer;
       transform: scaleY(-1);
     }
-    .master-volume-slider::-webkit-slider-thumb {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ffffff;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    }
-    .master-volume-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-      background: #4ade80;
-    }
 
     #main-home-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0d0f12; z-index: 99997; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px; }
     .home-title { font-size: clamp(4rem, 15vw, 7rem); font-weight: 700; letter-spacing: 10px; color: #4ade80; text-shadow: 0 0 35px rgba(74, 222, 128, 0.4); text-transform: uppercase; font-family: 'Rajdhani', sans-serif; text-align: center; }
-    .home-play-btn { background: transparent; border: 2px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; padding: 12px 40px; font-size: 1.4rem; font-weight: 600; cursor: pointer; border-radius: 8px; letter-spacing: 4px; transition: all 0.2s ease; }
+    
+    .home-play-container { display: flex; justify-content: center; align-items: center; position: relative; min-height: 80px; width: 100%; }
+    .home-play-btn { background: transparent; border: 2px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; padding: 12px 40px; font-size: 1.4rem; font-weight: 600; cursor: pointer; border-radius: 8px; letter-spacing: 4px; transition: transform 0.15s ease, border-color 0.2s, color 0.2s; position: relative; z-index: 5; font-family: 'Rajdhani', sans-serif; }
     .home-play-btn:hover { border-color: #4ade80; color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3); }
+    
     .home-menu-icon-btn { background: transparent; border: none; color: #ffffff; font-size: 2.2rem; cursor: pointer; transition: color 0.2s; margin-top: 5px; }
     .home-menu-icon-btn:hover { color: #4ade80; }
 
@@ -118,7 +135,7 @@
     #initial-btn, #escape-btn { background: transparent; color: #e2e8f0; border: 2px solid rgba(255, 255, 255, 0.15); padding: 14px 45px; font-size: 1.6rem; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s ease; }
     #escape-btn { display: none; position: absolute; background: #4ade80; color: #0d0f12; z-index: 100000; }
     
-    .watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 35vw; font-weight: 700; color: #ffffff; opacity: 0.02; z-index: -1; user-select: none; pointer-events: none; letter-spacing: 10px; font-family: 'Rajdhani', sans-serif; }
+    .watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 35vw; font-weight: 700; color: #ffffff; opacity: 0.02; z-index: -1; user-select: none; pointer-events: none; letter-spacing: 10px; font-family: 'Rajdhani', sans-serif; transition: color 0.5s, opacity 0.5s; }
     
     .hud { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; align-items: center; }
     .life-tick { width: 4px; height: 22px; background-color: #4ade80; border-radius: 2px; transition: all 0.2s ease; box-shadow: 0 0 10px rgba(74, 222, 128, 0.4); }
@@ -129,16 +146,30 @@
     .life-warning-banner.show-warning-1 { opacity: 1; color: #fbbf24; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(251, 191, 36, 0.5); font-family: 'Prompt', sans-serif; }
     @keyframes warning-pulse { 0% { opacity: 0.5; transform: translateX(-50%) scale(0.98); } 100% { opacity: 1; transform: translateX(-50%) scale(1.02); } }
 
-    .top-right-btns { position: absolute; top: 15px; right: 120px; display: flex; gap: 8px; z-index: 10; }
+    .top-right-btns { position: absolute; top: 15px; right: 70px; display: flex; gap: 8px; z-index: 10; }
     .top-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; width: 38px; height: 38px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
     .top-btn:hover { background: rgba(255,255,255,0.15); border-color: #4ade80; color: #4ade80; }
+    
+    /* --- TOP LEFT LEADERBOARD --- */
+    .top-left-container { position: absolute; top: 15px; left: 15px; z-index: 40; display: flex; flex-direction: column; gap: 5px; }
+    .trophy-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; border-radius: 8px; width: 38px; height: 38px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
+    .trophy-btn:hover { background: rgba(255,255,255,0.15); border-color: #4ade80; color: #4ade80; }
+    
+    .leaderboard-box { font-size: 0.9rem; letter-spacing: 1px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.1); width: 280px; max-height: 280px; overflow-y: auto; display: none; background: rgba(13, 15, 18, 0.98); border-radius: 8px; padding: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 40; }
+    body.hell-mode .leaderboard-box { background: rgba(26, 3, 3, 0.98); border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 10px 25px rgba(139, 0, 0, 0.5); }
+    
+    .lb-header-tabs { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; }
+    .lb-tab-btn { background: none; border: none; color: #6c7a8c; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; letter-spacing: 1px; transition: color 0.2s; }
+    .lb-tab-btn.active { color: #4ade80; text-shadow: 0 0 10px rgba(74,222,128,0.4); }
+    body.hell-mode .lb-tab-btn.active { color: #ef4444; text-shadow: 0 0 10px rgba(239,68,68,0.6); }
+
     .menu-float-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; width: 38px; height: 38px; border-radius: 8px; font-size: 18px; cursor: pointer; z-index: 10; display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; }
     .menu-float-btn:hover { border-color: #4ade80; color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.3); }
 
-    .game-container { text-align: center; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 600px; padding: 0 10px; }
+    .game-container { text-align: center; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 600px; padding: 0 10px; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
     .history { font-size: 16px; color: #a0aec0; height: 25px; text-align: center; font-weight: 500; letter-spacing: 2px; }
     .error-msg { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
-    .arcade-input-screen { font-size: clamp(2.5rem, 10vw, 4rem); font-weight: 700; letter-spacing: 4px; color: #4ade80; text-shadow: 0 0 20px rgba(74, 222, 128, 0.4); min-height: 70px; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; word-break: break-all; }
+    .arcade-input-screen { font-size: clamp(2.5rem, 10vw, 4rem); font-weight: 700; letter-spacing: 4px; color: #4ade80; text-shadow: 0 0 20px rgba(74, 222, 128, 0.4); min-height: 70px; display: flex; justify-content: center; align-items: center; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; word-break: break-all; transition: color 0.5s, text-shadow 0.5s; }
     .cursor { display: inline-block; width: 10px; height: 35px; background-color: #ffffff; margin-left: 4px; animation: blink 0.8s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -146,7 +177,6 @@
     .streak-num { color: #38bdf8; font-weight: 700; font-size: 1.2rem; font-family: 'Rajdhani', sans-serif; }
     .best-num { color: #fbbf24; font-weight: 700; font-size: 1.2rem; font-family: 'Rajdhani', sans-serif; }
 
-    .leaderboard-box { margin-top: 15px; font-size: 0.9rem; letter-spacing: 1px; color: #94a3b8; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 12px; width: 90%; max-width: 350px; max-height: 200px; overflow-y: auto; display: none; background: rgba(13, 15, 18, 0.98); border-radius: 8px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 30; }
     .score-row { display: flex; justify-content: space-between; padding: 4px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
     .hidden-input { position: absolute; opacity: 0; pointer-events: none; }
 
@@ -160,7 +190,7 @@
     .custom-submit-btn { background: #4ade80; color: #0d0f12; border: none; padding: 12px; font-size: 1.1rem; font-weight: 700; border-radius: 10px; cursor: pointer; letter-spacing: 2px; font-family: 'Prompt', sans-serif; width: 100%; }
     .custom-submit-btn:hover { background: #22c55e; box-shadow: 0 0 20px rgba(74, 222, 128, 0.4); }
 
-    /* --- CAT DENTIST VIEW (ปรับขนาดให้พอดีหน้าจอมือถือ) --- */
+    /* --- CAT DENTIST VIEW --- */
     #cat-game-view { display: none; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; gap: 12px; position: relative; padding: 15px; }
     .cat-box { position: relative; width: min(92vw, 420px); height: min(95vw, 440px); background: url('https://cdn.phototourl.com/free/2026-08-17-6534f1b0-ff1c-472e-8c6c-ef429eadcff8.jpg') no-repeat center center; background-size: contain; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 2px solid transparent; transition: all 0.2s ease; }
     .cat-box.bitten-state { background: url('https://media.discordapp.net/attachments/1335747244003033088/1538992671488741457/200628e0-9324-4c64-b0d1-af68247f4623.png?ex=6a84b21d&is=6a83609d&hm=d0360fbcea38ecec59d9f69da355d7222c90a737c65de5290e58cab53b042a66&=&format=webp&quality=lossless&width=948&height=1024') no-repeat center center !important; background-size: contain !important; border: 2px solid #ef4444; box-shadow: 0 0 35px rgba(239, 68, 68, 0.7), inset 0 0 25px rgba(239, 68, 68, 0.5); }
@@ -175,7 +205,7 @@
     .tooth:disabled { background: rgba(10, 10, 15, 0.95) !important; box-shadow: inset 0 10px 20px rgba(0,0,0,1); border: 1px solid rgba(0,0,0,0.8); cursor: not-allowed; transform: translate(-50%, -50%) scale(0.85); }
     .tooth.bitten { background: rgba(239, 68, 68, 0.8) !important; box-shadow: 0 0 25px rgba(239, 68, 68, 0.9), inset 0 0 10px rgba(0,0,0,0.5); border-color: #ef4444 !important; transform: translate(-50%, -50%) scale(1.05); z-index: 10; }
 
-    /* --- WHITEBOARD VIEW STYLES (ปรับเลย์เอาต์ toolbar และ canvas บนมือถือ) --- */
+    /* --- WHITEBOARD VIEW STYLES --- */
     #whiteboard-game-view { display: none; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; background: #0d0f12; }
     #name-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 15, 18, 0.95); z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 20px; text-align: center; }
     .modal-title { font-size: clamp(2.2rem, 8vw, 3rem); font-weight: 700; color: #4ade80; font-family: 'Rajdhani', sans-serif; letter-spacing: 4px; }
@@ -195,69 +225,6 @@
 
     .canvas-container { position: relative; width: 95vw; height: 75vh; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 2px solid #2a2e38; margin-top: 50px; display: flex; justify-content: center; align-items: center; background: #ffffff; }
     canvas { background: #ffffff; display: block; cursor: crosshair; width: 100%; height: 100%; touch-action: none; }
-// --- Touch Support สำหรับ Whiteboard บนมือถือ ---
-    canvas.addEventListener('touchstart', (e) => {
-      if (nameModal.style.display !== 'none') return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      drawing = true;
-      const rect = canvas.getBoundingClientRect();
-      currentPoints = [{ x: touch.clientX - rect.left, y: touch.clientY - rect.top }];
-    }, { passive: false });
-
-    canvas.addEventListener('touchmove', (e) => {
-      if (!drawing) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      const newX = touch.clientX - rect.left;
-      const newY = touch.clientY - rect.top;
-      currentPoints.push({ x: newX, y: newY });
-
-      redrawCanvas();
-      const tempStroke = {
-        points: currentPoints,
-        color: colorPicker.value,
-        size: sizePicker.value,
-        mode: currentMode,
-        name: myName,
-        grid_x: currentGridX,
-        grid_y: currentGridY
-      };
-      drawStrokeObject(tempStroke);
-
-      ctx.fillStyle = colorPicker.value;
-      ctx.font = '12px Prompt';
-      ctx.fillText(myName, newX + 10, newY - 5);
-    }, { passive: false });
-
-    window.addEventListener('touchend', async () => {
-      if (!drawing) return;
-      drawing = false;
-
-      if (currentPoints.length > 1) {
-        const now = new Date();
-        const strokeObj = {
-          points: currentPoints,
-          color: colorPicker.value,
-          size: sizePicker.value,
-          mode: currentMode,
-          name: myName,
-          date: now.toLocaleDateString(),
-          time: now.toLocaleTimeString(),
-          grid_x: currentGridX,
-          grid_y: currentGridY
-        };
-
-        const { data } = await _supabase.from('whiteboard_strokes').insert([{ stroke_json: strokeObj }]).select();
-        if (data && data.length > 0) {
-          strokeObj.db_id = data[0].id;
-        }
-        allStrokes.push(strokeObj);
-        redrawCanvas();
-      }
-      currentPoints = [];
-    });
 
     #stroke-info-popup { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(50px); background: rgba(22, 27, 34, 0.95); border: 1px solid #4ade80; color: #e2e8f0; padding: 10px 18px; border-radius: 10px; font-size: 0.85rem; letter-spacing: 1px; box-shadow: 0 5px 20px rgba(74, 222, 128, 0.3); z-index: 20; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; pointer-events: none; display: flex; gap: 15px; width: 90%; max-width: 380px; justify-content: center; text-align: center; }
     #stroke-info-popup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -280,7 +247,6 @@
     #tip-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(22, 27, 34, 0.95); border: 1px solid #4ade80; color: #e2e8f0; padding: 10px 20px; border-radius: 10px; font-size: 0.9rem; letter-spacing: 1px; box-shadow: 0 5px 20px rgba(74, 222, 128, 0.3); z-index: 999999; transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0; pointer-events: none; text-align: center; width: 90%; max-width: 400px; }
     #tip-popup.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* ปุ่มปิดทองคำตัวโต ๆ */
     .golden-close-btn {
       position: fixed;
       top: 50%;
@@ -310,9 +276,94 @@
       box-shadow: 0 0 80px rgba(255, 215, 1, 1);
       transform: translate(-50%, -50%) scale(1.05);
     }
+
+    /* Hard Mode Toggle */
+    .hard-mode-btn {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: rgba(239, 68, 68, 0.4);
+      padding: 6px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      z-index: 50;
+    }
+    .hard-mode-btn:hover, 
+    .hard-mode-btn.active {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+    }
+    .hard-mode-btn.active {
+      background: #ef4444;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+    }
+
+    #hard-mode-timer {
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #ef4444;
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+      display: none;
+      z-index: 20;
+    }
+
+    .forbidden-container {
+      position: absolute;
+      top: 20%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .forbidden-container.left { left: 5%; }
+    .forbidden-container.right { right: 5%; }
+
+    .forbidden-badge {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      animation: fadeInScale 0.3s ease-out forwards;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+    }
+
+    @keyframes fadeInScale {
+      0% { opacity: 0; transform: scale(0.8) translateY(-10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ปุ่มกวน ๆ แสดงเฉพาะรูปอิโมจิเพลง -->
+  <button id="funny-btn" style="position: fixed; bottom: 20px; left: 20px; z-index: 99999; background: transparent; border: none; font-size: 24px; cursor: pointer;">🎵</button>
+
+  <!-- Overlay สำหรับวิดีโอ พร้อมปุ่มปิดกวน ๆ ที่จะโผล่ขึ้นมา -->
+  <div id="video-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100000; justify-content:center; align-items:center;">
+    <div id="player"></div>
+    <button id="fake-close-btn" onclick="closeVideoPopup()" style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; z-index: 100001; font-family: 'Prompt', sans-serif;">ปิดคลิป</button>
+  </div>
 
   <div class="global-audio-widget" id="global-audio-widget" title="ปรับระดับเสียง / คลิกเพื่อปิด-เปิดเสียง">
     <button class="audio-icon-btn" id="audio-icon-btn">🔊</button>
@@ -325,7 +376,9 @@
 
   <div id="main-home-screen">
     <div class="home-title">W2W</div>
-    <button class="home-play-btn" onclick="openGame('w2w'); startBgm();">PLAY</button>
+    <div class="home-play-container">
+      <button class="home-play-btn" id="homePlayBtn" onmouseover="dodgeHomePlayBtn()" onclick="onHomePlayClicked()">PLAY</button>
+    </div>
     <button class="home-menu-icon-btn" onclick="goToHub(); startBgm();" title="Open Hub">☰</button>
   </div>
 
@@ -363,17 +416,35 @@
       <div class="life-tick active" data-index="3"></div>
       <div class="life-tick active" data-index="4"></div>
     </div>
-    
+
+    <div id="hard-mode-timer">60</div>
+
+    <button id="hard-mode-toggle" class="hard-mode-btn">HARD MODE: OFF</button>
+
+    <div id="forbidden-left" class="forbidden-container left"></div>
+    <div id="forbidden-right" class="forbidden-container right"></div>
+
     <div id="life-warning-banner" class="life-warning-banner"></div>
+
+    <!-- TOP LEFT LEADERBOARD -->
+    <div class="top-left-container">
+      <button class="trophy-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
+      <div class="leaderboard-box" id="leaderboard-container">
+        <div class="lb-header-tabs">
+          <button class="lb-tab-btn active" id="tab-classic" onclick="switchLeaderboardTab('classic')">CLASSIC</button>
+          <button class="lb-tab-btn" id="tab-hard" onclick="switchLeaderboardTab('hard')">HARD MODE</button>
+        </div>
+        <div id="top-scores-list">Loading scores...</div>
+      </div>
+    </div>
 
     <div class="top-right-btns">
       <button class="top-btn" id="exit-fullscreen-btn" title="Exit Fullscreen">✕</button>
-      <button class="top-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
     </div>
 
     <button class="menu-float-btn" onclick="goToHub()" title="Back to Hub">☰</button>
 
-    <div class="game-container">
+    <div class="game-container" id="gameScreen">
       <div class="history" id="status-msg">Type any word to start นะจ๊ะ</div>
       <div class="arcade-input-screen" id="arcade-screen">
         <span id="typed-text"></span><span class="cursor"></span>
@@ -383,11 +454,6 @@
         <div class="streak-item">STREAK <span class="streak-num" id="streak-counter">0</span></div>
         <span>|</span>
         <div class="streak-item">BEST <span class="best-num" id="best-counter">0</span></div>
-      </div>
-
-      <div class="leaderboard-box" id="leaderboard-container">
-        <div style="font-weight: 700; margin-bottom: 8px; color: #4ade80; letter-spacing: 2px;">ONLINE TOP 25</div>
-        <div id="top-scores-list">Loading scores...</div>
       </div>
 
       <form id="game-form">
@@ -500,14 +566,27 @@
 
   <div id="tip-popup">💡 ไม่รู้ว่ารู้หรือยัง แต่ว่าปุ่มนี้ไม่ใช่ปุ่มปิดเกมหรอก แค่ปุ่มย่อหน้าจอนะครับ</div>
 
+  <!-- โหลด YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <script>
     const SUPABASE_URL = 'https://nafycmwlhczpdgscbeep.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hZnljbXdsaGN6cGRnc2NiZWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5ODM0NjIsImV4cCI6MjEwMjU1OTQ2Mn0.j51QCbQvcy0JCxDshYcIkFf-SyzXCawVVJ3CRWT5NGg';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ================= GLOBAL AUDIO & VOLUME CONTROL SYSTEM =================
+    // ================= AUDIO CONTEXT & SYSTEM =================
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const masterGainNode = audioCtx.createGain();
+    masterGainNode.gain.setValueAtTime(1.0, audioCtx.currentTime); 
+    masterGainNode.connect(audioCtx.destination);
+
+    function unlockAudioContext() {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
     let masterVolume = 0.4;
-    let previousVolume = 0.4;
     let isMuted = false;
     let isMusicPlaying = false;
 
@@ -524,7 +603,8 @@
     const masterVolumeSlider = document.getElementById('master-volume-slider');
 
     function startBgm() {
-      if (!isMusicPlaying) {
+      unlockAudioContext();
+      if (!isMusicPlaying && !isHardMode) {
         bgMusic.play().then(() => {
           isMusicPlaying = true;
         }).catch(err => {});
@@ -549,6 +629,7 @@
     }
 
     audioIconBtn.addEventListener('click', () => {
+      unlockAudioContext();
       startBgm();
       isMuted = !isMuted;
       if (!isMuted && masterVolume === 0) {
@@ -559,18 +640,19 @@
     });
 
     masterVolumeSlider.addEventListener('input', (e) => {
+      unlockAudioContext();
       startBgm();
       masterVolume = parseFloat(e.target.value);
       if (masterVolume > 0) {
         isMuted = false;
       }
-      previousVolume = masterVolume > 0 ? masterVolume : previousVolume;
       updateAudioVolumes();
     });
 
     updateAudioVolumes();
 
     function openGame(gameName) {
+      unlockAudioContext();
       startBgm();
       document.getElementById('main-home-screen').style.display = 'none';
       document.getElementById('hub-screen').style.display = 'none';
@@ -595,6 +677,7 @@
     }
 
     function goToHub() {
+      unlockAudioContext();
       startBgm();
       document.getElementById('main-home-screen').style.display = 'none';
       document.getElementById('w2w-game-view').style.display = 'none';
@@ -604,13 +687,14 @@
       document.getElementById('hub-screen').style.display = 'flex';
     }
 
-    // ================= ระบบคลิกปุ่มย่อจอ (✕) ตามจำนวนครั้ง =================
+    // ================= ระบบปุ่มย่อจอ (✕) =================
     let exitClickCount = 0;
     const exitFsBtn = document.getElementById('exit-fullscreen-btn');
     const tipPopup = document.getElementById('tip-popup');
     const goldenCloseBtn = document.getElementById('golden-close-btn');
 
     exitFsBtn.addEventListener('click', () => {
+      unlockAudioContext();
       if (document.fullscreenElement) document.exitFullscreen().catch(err => {});
       exitClickCount++;
       
@@ -621,7 +705,7 @@
         tipPopup.innerText = "💡 พอได้แล้วน่า กดไปมันก็ไม่มีไรเกิดขึ้นหรอก";
         showTipPopup();
       } else if (exitClickCount === 30) {
-        tipPopup.innerText = "💡 ยังอีก กดทำไมน้ออ มันไม่มีไร";
+        tipPopup.innerText = "💡 ยังอีก กดทำไมน้ออ ไม่มีไร";
         showTipPopup();
       } else if (exitClickCount === 40) {
         tipPopup.innerText = "💡 กดไปเถอะ ๆ ไม่ห้ามแล้ว ไม่มีไรเกิดขึ้นหรอก";
@@ -647,8 +731,43 @@
     function closeWindowNow() {
       window.close();
       setTimeout(() => {
-        document.body.innerHTML = '<div style="background:#0d0f12; color:#ffd700; height:100vh; display:flex; justify-content:center; align-items:center; font-size:3rem; font-family:Rajdhani;">ยินดีด้วย! คุณได้รับรางวัลปิดเว็บแล้วจ้า 😄</div>';
+        document.body.innerHTML = '<div style="background:#0d0f12; color:#ffd700; height:100vh; display:flex; justify-content:center; align-items:center; font-size:3rem; font-family:Rajdhani;">ควายดอง</div>';
       }, 200);
+    }
+
+    // ================= ระบบ Play หนี หน้าแรกสุด =================
+    let homePlayDodgeCount = 0;
+    const targetHomeDodges = Math.floor(Math.random() * 5) + 1; 
+    const homePlayBtn = document.getElementById('homePlayBtn');
+
+    function dodgeHomePlayBtn() {
+      if (homePlayDodgeCount < targetHomeDodges) {
+        homePlayDodgeCount++;
+        playWhooshSound();
+        const xOffset = (Math.random() - 0.5) * 260;
+        const yOffset = (Math.random() - 0.5) * 120;
+        homePlayBtn.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+      } else {
+        homePlayBtn.style.transform = 'translate(0px, 0px)';
+      }
+    }
+
+    homePlayBtn.addEventListener('mouseenter', () => { dodgeHomePlayBtn(); });
+    homePlayBtn.addEventListener('touchstart', (e) => {
+      if (homePlayDodgeCount < targetHomeDodges) {
+        e.preventDefault();
+        dodgeHomePlayBtn();
+      }
+    }, { passive: false });
+
+    function onHomePlayClicked() {
+      unlockAudioContext();
+      startBgm();
+      if (homePlayDodgeCount >= targetHomeDodges) {
+        openGame('w2w');
+      } else {
+        dodgeHomePlayBtn();
+      }
     }
 
     // ================= W2W LOGIC =================
@@ -658,7 +777,7 @@
     let requiredPrefix = ""; 
     const usedWords = new Set();
     let dictionary = new Set();
-    let leaderboard = [];
+    let currentLbTab = 'classic';
 
     const form = document.getElementById('game-form');
     const input = document.getElementById('word-input');
@@ -673,7 +792,6 @@
     const leaderboardContainer = document.getElementById('leaderboard-container');
     const startScreen = document.getElementById('start-screen');
     const initialBtn = document.getElementById('initial-btn');
-    const videoContainer = document.getElementById('video-container');
 
     const gameOverScreen = document.getElementById('game-over-screen');
     const finalStreakDisplay = document.getElementById('final-streak-display');
@@ -681,32 +799,46 @@
     const customSubmitBtn = document.getElementById('custom-submit-btn');
 
     trophyBtn.addEventListener('click', () => {
+      unlockAudioContext();
       const isHidden = leaderboardContainer.style.display !== 'block';
       leaderboardContainer.style.display = isHidden ? 'block' : 'none';
-      if (isHidden) fetchLeaderboard();
+      if (isHidden) fetchLeaderboard(currentLbTab);
       if (gameOverScreen.style.display !== 'flex') input.focus();
     });
 
-    async function fetchLeaderboard() {
-      const { data } = await _supabase.from('leaderboard').select('name, score').order('score', { ascending: false }).limit(25);
-      leaderboard = data || [];
-      bestCounterEl.innerText = leaderboard.length > 0 ? leaderboard[0].score : "0";
-      if (leaderboard.length === 0) {
-        topScoresListEl.innerHTML = '<div style="text-align:center; color: #6c7a8c; padding: 10px;">No online scores yet.</div>';
+    function switchLeaderboardTab(tab) {
+      currentLbTab = tab;
+      document.getElementById('tab-classic').classList.toggle('active', tab === 'classic');
+      document.getElementById('tab-hard').classList.toggle('active', tab === 'hard');
+      fetchLeaderboard(tab);
+    }
+
+    async function fetchLeaderboard(mode = 'classic') {
+      const tableName = mode === 'hard' ? 'leaderboard_hard' : 'leaderboard';
+      const { data } = await _supabase.from(tableName).select('name, score').order('score', { ascending: false }).limit(25);
+      const scores = data || [];
+      if (scores.length > 0) {
+        bestCounterEl.innerText = scores[0].score;
+      } else {
+        bestCounterEl.innerText = "0";
+      }
+      if (scores.length === 0) {
+        topScoresListEl.innerHTML = `<div style="text-align:center; color: #6c7a8c; padding: 10px;">No online scores yet.</div>`;
         return;
       }
-      topScoresListEl.innerHTML = leaderboard.map((item, index) => 
-        `<div class="score-row"><span>${index + 1}. ${item.name}</span><span style="color: #4ade80; font-weight: 700;">${item.score}</span></div>`
+      topScoresListEl.innerHTML = scores.map((item, index) => 
+        `<div class="score-row"><span>${index + 1}. ${item.name}</span><span style="color: ${mode === 'hard' ? '#ef4444' : '#4ade80'}; font-weight: 700;">${item.score}</span></div>`
       ).join('');
     }
-    fetchLeaderboard();
+    fetchLeaderboard('classic');
 
     async function submitScoreAndRestart() {
       let playerName = customPlayerName.value.trim();
       if (!playerName) playerName = "ANONYMOUS";
       
-      await _supabase.from('leaderboard').insert([{ name: playerName.substring(0, 12), score: streak }]);
-      fetchLeaderboard();
+      const tableName = isHardMode ? 'leaderboard_hard' : 'leaderboard';
+      await _supabase.from(tableName).insert([{ name: playerName.substring(0, 12), score: streak }]);
+      fetchLeaderboard(isHardMode ? 'hard' : 'classic');
 
       gameOverScreen.style.display = 'none';
       customPlayerName.value = "";
@@ -725,38 +857,24 @@
       .then(res => res.json())
       .then(data => { dictionary = new Set(Object.keys(data)); });
 
-    // W2W Input & Easter Eggs Logic
-    input.addEventListener('input', () => {
-      let val = input.value;
-      let upperVal = val.trim().toUpperCase();
+    input.addEventListener('input', (e) => {
+      let val = input.value.trim();
+      
+      if (val.toUpperCase() === "JUNE" || val.toUpperCase() === "SAM") {
+        showVideoPopup();
+        input.value = "";
+        typedTextEl.innerText = "";
+        return;
+      }
 
-      // เช็กภาษาไทย
       const thaiRegex = /[\u0E00-\u0E7F]/;
       if (thaiRegex.test(val)) {
         statusEl.innerText = "โปรด Type in อังกฤษ นะครับ";
         statusEl.style.color = "#ff4d4d";
-        
         operaSound.currentTime = 0;
         operaSound.play().catch(err => {});
-        
         input.value = val.replace(/[\u0E00-\u0E7F]/g, '');
         return;
-      }
-
-      // Easter Egg "JUNE"
-      if (upperVal === 'JUNE') {
-        videoContainer.innerHTML = `
-          <iframe 
-            width="400" 
-            height="225" 
-            src="https://www.youtube.com/embed/lg5WKsVnEA4?autoplay=1" 
-            title="June Easter Egg" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-          </iframe>
-        `;
-        videoContainer.style.display = 'block';
       }
 
       let formattedVal = val.toUpperCase();
@@ -770,30 +888,43 @@
       typedTextEl.innerText = formattedVal;
     });
 
-    initialBtn.addEventListener('click', () => {
-      startBgm();
-      initialBtn.style.display = 'none';
-      escapeBtn.style.display = 'block';
-      escapeBtn.style.top = "60%"; escapeBtn.style.left = "50%"; escapeBtn.style.transform = "translate(-50%, -50%)";
-      if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(err => {});
-    });
+    function showVideoPopup() {
+      document.getElementById('video-overlay').style.display = 'flex';
+      const fakeCloseBtn = document.getElementById('fake-close-btn');
+      fakeCloseBtn.style.display = 'none';
+      
+      // ปุ่มปิดกวนๆ จะโผล่ขึ้นมาสุ่มตำแหน่งหลังจากผ่านไป 3-6 วินาที
+      const randomDelay = Math.floor(Math.random() * 3000) + 3000;
+      setTimeout(() => {
+        if (document.getElementById('video-overlay').style.display === 'flex') {
+          const maxX = window.innerWidth - 150;
+          const maxY = window.innerHeight - 80;
+          const randomX = Math.floor(Math.random() * maxX);
+          const randomY = Math.floor(Math.random() * maxY);
+          
+          fakeCloseBtn.style.position = 'absolute';
+          fakeCloseBtn.style.left = randomX + 'px';
+          fakeCloseBtn.style.top = randomY + 'px';
+          fakeCloseBtn.style.display = 'block';
+        }
+      }, randomDelay);
+    }
 
-    window.addEventListener('click', () => { 
-      startBgm();
-      if(document.getElementById('w2w-game-view').style.display === 'flex' && gameOverScreen.style.display !== 'flex') {
-        input.focus();
+    function closeVideoPopup() {
+      document.getElementById('video-overlay').style.display = 'none';
+      if (player && typeof player.stopVideo === 'function') {
+        player.stopVideo();
       }
-    });
+    }
 
-    // ================= ระบบปุ่ม Play วิ่งหนี =================
+    // ================= ESCAPE BUTTON LOGIC =================
     let escapeCount = 0;
     const maxEscapes = 5;
     const escapeBtn = document.getElementById('escape-btn');
 
     function playWhooshSound() {
       try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        unlockAudioContext();
         const bufferSize = audioCtx.sampleRate * 0.15;
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -810,7 +941,7 @@
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
         noise.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGainNode);
         noise.start();
       } catch (e) {}
     }
@@ -854,8 +985,14 @@
       });
     }
 
+    initialBtn.addEventListener('click', () => {
+      startScreen.style.display = 'none';
+      input.focus();
+    });
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      unlockAudioContext();
       const currentWord = input.value.trim().toLowerCase();
       const currentWordUpper = currentWord.toUpperCase();
       if (!currentWord || currentWord === requiredPrefix.toLowerCase()) return;
@@ -866,14 +1003,29 @@
 
       popSound.currentTime = 0; popSound.play().catch(e => {});
       usedWords.add(currentWord);
-      lastWord = currentWord;
       streak++;
       streakCounterEl.innerText = streak;
-      statusEl.innerText = `ACCEPTED: ${currentWordUpper}`;
-      statusEl.style.color = "#a0aec0";
-      requiredPrefix = currentWord.slice(-1);
-      input.value = requiredPrefix.toUpperCase();
-      typedTextEl.innerText = requiredPrefix.toUpperCase();
+
+      if (isHardMode) {
+        onPlayerCorrectInput(); 
+        if (streak % 5 === 0) {
+          spawnForbiddenWords();
+        }
+        hardState.lastWord = currentWordUpper;
+        hardState.hasPlayed = true;
+      } else {
+        normalState.lastWord = currentWordUpper;
+        normalState.hasPlayed = true;
+      }
+
+      lastWord = currentWord;
+      requiredPrefix = currentWord.slice(-1).toUpperCase();
+
+      statusEl.className = "history";
+      statusEl.innerText = `Your last word is ${currentWordUpper} (Next prefix: ${requiredPrefix})`;
+      input.value = requiredPrefix;
+      typedTextEl.innerText = requiredPrefix;
+      input.focus();
     });
 
     function updateLivesDisplay() {
@@ -901,29 +1053,23 @@
       }
     }
 
-    function handleWrong(msg) {
-      lives--;
-      updateLivesDisplay();
-      statusEl.className = "history error-msg";
-      statusEl.innerText = `${msg} [-1 Life]`;
-      input.value = requiredPrefix.toUpperCase();
-      typedTextEl.innerText = requiredPrefix.toUpperCase();
-
-      if (lives <= 0) {
-        deathSound.currentTime = 0; deathSound.play().catch(e => {});
-        setTimeout(() => {
-          finalStreakDisplay.innerText = streak;
-          gameOverScreen.style.display = 'flex';
-          customPlayerName.focus();
-        }, 150);
-      }
-    }
-
     function resetGame() {
       streak = 0; lives = 5; lastWord = ""; requiredPrefix = ""; usedWords.clear();
+      clearForbiddenUI();
       updateLivesDisplay();
       streakCounterEl.innerText = "0";
-      statusEl.innerText = "SystemReset."; statusEl.className = "history";
+      
+      if (!isHardMode) {
+        normalState.lastWord = "";
+        normalState.hasPlayed = false;
+        statusEl.innerText = "Type any word to start normal mode baby.";
+      } else {
+        hardState.lastWord = "";
+        hardState.hasPlayed = false;
+        statusEl.innerText = "Type any word to start hard mode baby.";
+      }
+
+      statusEl.className = "history";
       input.value = ""; typedTextEl.innerText = "";
       input.focus();
     }
@@ -937,6 +1083,7 @@
     const catResetBtn = document.getElementById('cat-reset-btn');
 
     function initCatGame() {
+      unlockAudioContext();
       trapTooth = Math.floor(Math.random() * 16);
       catGameOver = false;
       catBox.classList.remove('chomp', 'bitten-state'); 
@@ -953,6 +1100,7 @@
 
     teethButtons.forEach(btn => {
       btn.addEventListener('click', () => {
+        unlockAudioContext();
         if (catGameOver) return;
         const index = parseInt(btn.dataset.index);
         btn.disabled = true;
@@ -1012,6 +1160,7 @@
     });
 
     startBoardBtn.addEventListener('click', async () => {
+      unlockAudioContext();
       let val = usernameInput.value.trim();
       if (!val) val = "ANONYMOUS";
       myName = val.substring(0, 12);
@@ -1110,7 +1259,6 @@
       currentPanelStrokes.forEach(stroke => drawStrokeObject(stroke));
     }
 
-    // Canvas Mouse Events
     canvas.addEventListener('mousedown', (e) => {
       if (nameModal.style.display !== 'none') return;
       drawing = true;
@@ -1170,7 +1318,6 @@
       currentPoints = [];
     });
 
-    // Canvas Touch Events
     canvas.addEventListener('touchstart', (e) => {
       if (nameModal.style.display !== 'none') return;
       e.preventDefault();
@@ -1340,7 +1487,304 @@
       .subscribe();
 
     fetchStrokesFromDB();
+
+    // ================= HARD MODE & STATE PRESERVATION =================
+    let isHardMode = false;
+    let timeLeft = 60;
+    let timerInterval = null;
+    let penaltyInterval = null;
+    let bgmInterval = null;
+    let isBgmPlaying = false;
+    
+    let normalState = { 
+      streak: 0, 
+      lives: 5, 
+      lastWord: "", 
+      requiredPrefix: "", 
+      usedWords: new Set(),
+      hasPlayed: false
+    };
+
+    let hardState = {
+      lastWord: "",
+      hasPlayed: false
+    };
+
+    const hardModeBtn = document.getElementById('hard-mode-toggle');
+    const timerDisplay = document.getElementById('hard-mode-timer');
+    const forbiddenLeftContainer = document.getElementById('forbidden-left');
+    const forbiddenRightContainer = document.getElementById('forbidden-right');
+    const gameScreenContainer = document.getElementById('gameScreen');
+
+    const basicKindergartenWords = [
+      "CAT", "DOG", "SUN", "MOON", "BOOK", "PEN", "BALL", "MILK", "FISH", "BIRD",
+      "TREE", "STAR", "APPLE", "EGG", "WATER", "BLUE", "RED", "HAND", "FOOT",
+      "HAT", "BAG", "CAR", "BUS", "DOOR", "BED", "SHIRT", "FROG", "DUCK"
+    ];
+
+    hardModeBtn.addEventListener('click', () => {
+      unlockAudioContext();
+      
+      gameScreenContainer.style.opacity = '0';
+      gameScreenContainer.style.transform = 'scale(0.97)';
+
+      setTimeout(() => {
+        isHardMode = !isHardMode;
+        hardModeBtn.classList.toggle('active', isHardMode);
+        hardModeBtn.innerText = isHardMode ? "HARD MODE: ON" : "HARD MODE: OFF";
+
+        if (isHardMode) {
+          normalState = { streak, lives, lastWord, requiredPrefix, usedWords: new Set(usedWords), hasPlayed: normalState.hasPlayed };
+          
+          streak = 0;
+          lives = 5;
+          lastWord = "";
+          requiredPrefix = "";
+          usedWords.clear();
+
+          document.body.classList.add('hell-mode');
+          bgMusic.pause();
+          startActionBGM();
+          startHardModeTimer();
+
+          statusEl.innerText = "Type any word to start hard mode baby.";
+          switchLeaderboardTab('hard');
+        } else {
+          streak = normalState.streak;
+          lives = normalState.lives;
+          lastWord = normalState.lastWord;
+          requiredPrefix = normalState.requiredPrefix;
+          usedWords.clear();
+          normalState.usedWords.forEach(w => usedWords.add(w));
+
+          document.body.classList.remove('hell-mode');
+          stopActionBGM();
+          stopHardModeTimer();
+          clearForbiddenUI();
+          if (isMusicPlaying) bgMusic.play().catch(e => {});
+
+          if (normalState.hasPlayed && normalState.lastWord) {
+            statusEl.innerText = `Your last word is ${normalState.lastWord}`;
+          } else {
+            statusEl.innerText = "Type any word to start normal mode baby.";
+          }
+          switchLeaderboardTab('classic');
+        }
+
+        streakCounterEl.innerText = streak;
+        updateLivesDisplay();
+        input.value = requiredPrefix.toUpperCase();
+        typedTextEl.innerText = requiredPrefix.toUpperCase();
+
+        gameScreenContainer.style.opacity = '1';
+        gameScreenContainer.style.transform = 'scale(1)';
+        input.focus();
+      }, 200);
+    });
+
+    function handleWrong(msg) {
+      lives--;
+      updateLivesDisplay();
+      statusEl.className = "history error-msg";
+      statusEl.innerText = `${msg} [-1 Life]`;
+      input.value = requiredPrefix.toUpperCase();
+      typedTextEl.innerText = requiredPrefix.toUpperCase();
+
+      if (lives <= 0) {
+        deathSound.currentTime = 0; deathSound.play().catch(e => {});
+        stopHardModeTimer();
+        stopActionBGM();
+        setTimeout(() => {
+          finalStreakDisplay.innerText = streak;
+          gameOverScreen.style.display = 'flex';
+          customPlayerName.focus();
+        }, 150);
+      }
+    }
+
+    function startActionBGM() {
+      if (isBgmPlaying) return;
+      isBgmPlaying = true;
+      const notes = [220, 247.05, 261.63, 293.66, 329.63, 349.23, 392.00];
+      let step = 0;
+
+      bgmInterval = setInterval(() => {
+        try {
+          unlockAudioContext();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          let freq = notes[step % notes.length];
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          
+          const effectiveVol = isMuted ? 0 : masterVolume;
+          gain.gain.setValueAtTime(effectiveVol * 0.015, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+
+          osc.connect(gain);
+          gain.connect(masterGainNode);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.2);
+          step++;
+        } catch (e) {}
+      }, 250);
+    }
+
+    function stopActionBGM() {
+      isBgmPlaying = false;
+      clearInterval(bgmInterval);
+    }
+
+    function playBeepSound(frequency = 800, duration = 0.1, volume = 0.05) {
+      try {
+        unlockAudioContext();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+        
+        const effectiveVol = isMuted ? 0 : masterVolume;
+        gain.gain.setValueAtTime(effectiveVol * volume, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(masterGainNode);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function startHardModeTimer() {
+      if (!isHardMode) return;
+      clearInterval(timerInterval);
+      clearInterval(penaltyInterval);
+      
+      timeLeft = Math.max(6, 60 - (streak * 2));
+      timerDisplay.innerText = timeLeft;
+      timerDisplay.style.display = 'block';
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerDisplay.innerText = timeLeft;
+
+        if (timeLeft <= 5 && timeLeft > 0) {
+          playBeepSound(600, 0.15, 0.06);
+        }
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerDisplay.innerText = "TIME UP!";
+          triggerPenaltyLoop();
+        }
+      }, 1000);
+    }
+
+    function triggerPenaltyLoop() {
+      handleWrong("Time Out!");
+      penaltyInterval = setInterval(() => {
+        playBeepSound(300, 0.3, 0.08);
+        handleWrong("Penalty!");
+        if (lives <= 0) {
+          clearInterval(penaltyInterval);
+        }
+      }, 3000);
+    }
+
+    function onPlayerCorrectInput() {
+      if (!isHardMode) return;
+      clearInterval(penaltyInterval);
+      startHardModeTimer();
+    }
+
+    function stopHardModeTimer() {
+      clearInterval(timerInterval);
+      clearInterval(penaltyInterval);
+      timerDisplay.style.display = 'none';
+    }
+
+    function spawnForbiddenWords() {
+      if (!isHardMode) return;
+      let availableWords = basicKindergartenWords.filter(w => !usedWords.has(w.toLowerCase()));
+      if (availableWords.length < 2) availableWords = [...basicKindergartenWords];
+
+      let rand1 = availableWords[Math.floor(Math.random() * availableWords.length)];
+      availableWords = availableWords.filter(w => w !== rand1);
+      let rand2 = availableWords[Math.floor(Math.random() * availableWords.length)];
+
+      usedWords.add(rand1.toLowerCase());
+      usedWords.add(rand2.toLowerCase());
+
+      playBeepSound(880, 0.15, 0.08);
+
+      const badgeLeft = document.createElement('div');
+      badgeLeft.className = 'forbidden-badge';
+      badgeLeft.innerText = rand1;
+
+      const badgeRight = document.createElement('div');
+      badgeRight.className = 'forbidden-badge';
+      badgeRight.innerText = rand2;
+
+      forbiddenLeftContainer.appendChild(badgeLeft);
+      forbiddenRightContainer.appendChild(badgeRight);
+    }
+
+    function clearForbiddenUI() {
+      forbiddenLeftContainer.innerHTML = '';
+      forbiddenRightContainer.innerHTML = '';
+      stopHardModeTimer();
+      if (isHardMode) startHardModeTimer();
+    }
+
+    // ================= YOUTUBE API & FUNNY BTN =================
+    let player;
+    const videoId = 'n7XNd1zvH_8';
+    const startTime = 45; 
+    const duration = 15; 
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '315',
+        width: '560',
+        videoId: videoId,
+        playerVars: { 'autoplay': 1, 'controls': 0, 'start': startTime },
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        setTimeout(() => {
+          document.getElementById('video-overlay').style.display = 'none';
+          player.stopVideo();
+        }, duration * 1000);
+      }
+    }
+
+    document.getElementById('funny-btn').addEventListener('click', () => {
+      document.getElementById('video-overlay').style.display = 'flex';
+      if (player) {
+        player.loadVideoById({videoId: videoId, startSeconds: startTime});
+      }
+      
+      const fakeCloseBtn = document.getElementById('fake-close-btn');
+      fakeCloseBtn.style.display = 'none';
+      const randomDelay = Math.floor(Math.random() * 3000) + 3000;
+      setTimeout(() => {
+        if (document.getElementById('video-overlay').style.display === 'flex') {
+          const maxX = window.innerWidth - 150;
+          const maxY = window.innerHeight - 80;
+          const randomX = Math.floor(Math.random() * maxX);
+          const randomY = Math.floor(Math.random() * maxY);
+          
+          fakeCloseBtn.style.position = 'absolute';
+          fakeCloseBtn.style.left = randomX + 'px';
+          fakeCloseBtn.style.top = randomY + 'px';
+          fakeCloseBtn.style.display = 'block';
+        }
+      }, randomDelay);
+    });
   </script>
-<div id="video-container" style="display: none; position: absolute; right: 20px; top: 20px; z-index: 100; box-shadow: 0 0 15px rgba(0,0,0,0.5);"></div>
 </body>
 </html>
