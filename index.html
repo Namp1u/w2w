@@ -356,10 +356,8 @@
 </head>
 <body>
 
-  <!-- ปุ่มกวน ๆ แสดงเฉพาะรูปอิโมจิเพลง -->
   <button id="funny-btn" style="position: fixed; bottom: 20px; left: 20px; z-index: 99999; background: transparent; border: none; font-size: 24px; cursor: pointer;">🎵</button>
 
-  <!-- Overlay สำหรับวิดีโอ พร้อมปุ่มปิดกวน ๆ ที่จะโผล่ขึ้นมา -->
   <div id="video-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100000; justify-content:center; align-items:center;">
     <div id="player"></div>
     <button id="fake-close-btn" onclick="closeVideoPopup()" style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; z-index: 100001; font-family: 'Prompt', sans-serif;">ปิดคลิป</button>
@@ -426,7 +424,6 @@
 
     <div id="life-warning-banner" class="life-warning-banner"></div>
 
-    <!-- TOP LEFT LEADERBOARD -->
     <div class="top-left-container">
       <button class="trophy-btn" id="toggle-leaderboard" title="Toggle Leaderboard">🏆</button>
       <div class="leaderboard-box" id="leaderboard-container">
@@ -566,7 +563,6 @@
 
   <div id="tip-popup">💡 ไม่รู้ว่ารู้หรือยัง แต่ว่าปุ่มนี้ไม่ใช่ปุ่มปิดเกมหรอก แค่ปุ่มย่อหน้าจอนะครับ</div>
 
-  <!-- โหลด YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
@@ -893,7 +889,6 @@
       const fakeCloseBtn = document.getElementById('fake-close-btn');
       fakeCloseBtn.style.display = 'none';
       
-      // ปุ่มปิดกวนๆ จะโผล่ขึ้นมาสุ่มตำแหน่งหลังจากผ่านไป 3-6 วินาที
       const randomDelay = Math.floor(Math.random() * 3000) + 3000;
       setTimeout(() => {
         if (document.getElementById('video-overlay').style.display === 'flex') {
@@ -1742,16 +1737,16 @@
     const duration = 15; 
 
     function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '315',
-    width: '560',
-    videoId: videoId,
-    playerVars: { 'autoplay': 0, 'controls': 0, 'start': startTime }, // เปลี่ยนจาก 1 เป็น 0
-    events: {
-      'onStateChange': onPlayerStateChange
+      player = new YT.Player('player', {
+        height: '315',
+        width: '560',
+        videoId: videoId,
+        playerVars: { 'autoplay': 0, 'controls': 0, 'start': startTime },
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
     }
-  });
-}
 
     function onPlayerStateChange(event) {
       if (event.data === YT.PlayerState.PLAYING) {
@@ -1762,36 +1757,13 @@
       }
     }
 
-    document.getElementById('funny-btn').addEventListener('click', () => {
-      document.getElementById('video-overlay').style.display = 'flex';
-      if (player) {
+    const funnyBtn = document.getElementById('funny-btn');
+    funnyBtn.addEventListener('click', function() {
+      showVideoPopup();
+      if (player && typeof player.loadVideoById === 'function') {
         player.loadVideoById({videoId: videoId, startSeconds: startTime});
       }
-      
-      const fakeCloseBtn = document.getElementById('fake-close-btn');
-      fakeCloseBtn.style.display = 'none';
-      const randomDelay = Math.floor(Math.random() * 3000) + 3000;
-      setTimeout(() => {
-        if (document.getElementById('video-overlay').style.display === 'flex') {
-          const maxX = window.innerWidth - 150;
-          const maxY = window.innerHeight - 80;
-          const randomX = Math.floor(Math.random() * maxX);
-          const randomY = Math.floor(Math.random() * maxY);
-          
-          fakeCloseBtn.style.position = 'absolute';
-          fakeCloseBtn.style.left = randomX + 'px';
-          fakeCloseBtn.style.top = randomY + 'px';
-          fakeCloseBtn.style.display = 'block';
-        }
-      }, randomDelay);
     });
-const funnyBtn = document.getElementById('funny-btn');
-const videoOverlay = document.getElementById('video-overlay');
-
-// ต้องแน่ใจว่าใส่ไว้ใน Event 'click' เท่านั้น ห้ามใส่ parentheses () ท้ายชื่อฟังก์ชันตอนผูก Event
-funnyBtn.addEventListener('click', function() {
-    showVideoPopup(); // ฟังก์ชันเปิดและเล่นวิดีโอจะทำงานก็ต่อเมื่อมีการคลิกปุ่มนี้เท่านั้น
-});
   </script>
 </body>
 </html>
