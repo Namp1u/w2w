@@ -365,7 +365,7 @@
 
   <div id="video-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100000; justify-content:center; align-items:center;">
     <div id="player"></div>
-    <button id="fake-close-btn" onclick="closeVideoPopup()" style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; z-index: 100001; font-family: 'Prompt', sans-serif;">ปิดคลิป</button>
+    <button id="real-close-btn" onclick="closeVideoPopup()" style="position: absolute; top: 30px; right: 30px; padding: 15px 30px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; z-index: 100002; font-family: 'Prompt', sans-serif;">ปิดหน้าต่างนี้</button>
   </div>
 
   <div class="global-audio-widget" id="global-audio-widget" title="ปรับระดับเสียง / คลิกเพื่อปิด-เปิดเสียง">
@@ -862,7 +862,7 @@
       let val = input.value.trim();
       
       if (val.toUpperCase() === "JUNE" || val.toUpperCase() === "SAM") {
-        showVideoPopup();
+        playVideo('https://youtu.be/n7XNd1zvH_8');
         input.value = "";
         typedTextEl.innerText = "";
         return;
@@ -888,34 +888,6 @@
       }
       typedTextEl.innerText = formattedVal;
     });
-
-    function showVideoPopup() {
-      document.getElementById('video-overlay').style.display = 'flex';
-      const fakeCloseBtn = document.getElementById('fake-close-btn');
-      fakeCloseBtn.style.display = 'none';
-      
-      const randomDelay = Math.floor(Math.random() * 3000) + 3000;
-      setTimeout(() => {
-        if (document.getElementById('video-overlay').style.display === 'flex') {
-          const maxX = window.innerWidth - 150;
-          const maxY = window.innerHeight - 80;
-          const randomX = Math.floor(Math.random() * maxX);
-          const randomY = Math.floor(Math.random() * maxY);
-          
-          fakeCloseBtn.style.position = 'absolute';
-          fakeCloseBtn.style.left = randomX + 'px';
-          fakeCloseBtn.style.top = randomY + 'px';
-          fakeCloseBtn.style.display = 'block';
-        }
-      }, randomDelay);
-    }
-
-    function closeVideoPopup() {
-      document.getElementById('video-overlay').style.display = 'none';
-      if (player && typeof player.stopVideo === 'function') {
-        player.stopVideo();
-      }
-    }
 
     // ================= ESCAPE BUTTON LOGIC =================
     let escapeCount = 0;
@@ -1736,18 +1708,19 @@
     }
 
     // ================= YOUTUBE API & FUNNY BTN =================
-    let player;
-    const videoId = 'n7XNd1zvH_8';
+    let ytPlayer = null;
+    const defaultVideoId = 'n7XNd1zvH_8';
     const startTime = 45; 
     const duration = 15; 
 
     function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
+      ytPlayer = new YT.Player('player', {
         height: '315',
         width: '560',
-        videoId: videoId,
+        videoId: defaultVideoId,
         playerVars: { 'autoplay': 0, 'controls': 0, 'start': startTime },
         events: {
+          'onReady': (event) => {},
           'onStateChange': onPlayerStateChange
         }
       });
@@ -1756,19 +1729,65 @@
     function onPlayerStateChange(event) {
       if (event.data === YT.PlayerState.PLAYING) {
         setTimeout(() => {
-          document.getElementById('video-overlay').style.display = 'none';
-          player.stopVideo();
+          closeVideoPopup();
         }, duration * 1000);
       }
     }
 
-    const funnyBtn = document.getElementById('funny-btn');
-    funnyBtn.addEventListener('click', function() {
-      showVideoPopup();
-      if (player && typeof player.loadVideoById === 'function') {
-        player.loadVideoById({videoId: videoId, startSeconds: startTime});
+    function playVideo(videoUrl = '') {
+      const overlay = document.getElementById('video-overlay');
+      overlay.style.display = 'flex';
+      
+      let videoId = defaultVideoId;
+      if (videoUrl) {
+        videoId = videoUrl.split('youtu.be/')[1] || videoUrl.split('v=')[1] || defaultVideoId;
       }
-    });
+      
+      if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+        ytPlayer.loadVideoById({ 'videoId': videoId, 'startSeconds': startTime });
+      } else {
+        setTimeout(() => {
+          if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+            ytPlayer.loadVideoById({ 'videoId': videoId, 'startSeconds': startTime });
+          }
+        }, 500);
+      }
+    }
+
+    function closeVideoPopup() {
+      const overlay = document.getElementById('video-overlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
+      if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+        ytPlayer.stopVideo();
+      }
+    }
+
+    const funnyBtn = document.getElementById('funny-btn');
+    if (funnyBtn) {
+      funnyBtn.addEventListener('click', function() {
+        playVideo('https://youtu.be/n7XNd1zvH_8');
+      });
+    }
+    function closeVideoPopup() {
+      const overlay = document.getElementById('video-overlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
+      if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+        ytPlayer.stopVideo();
+      }
+
+     // --- เพิ่มโค้ดส่วนนี้เพื่อคืนค่าโฟกัสให้กับช่องพิมพ์ข้อความ ---
+      const w2wView = document.getElementById('w2w-game-view');
+      const gameOverScreen = document.getElementById('game-over-screen');
+      if (w2wView.style.display === 'flex' && gameOverScreen.style.display !== 'flex') {
+        setTimeout(() => {
+          input.focus();
+        }, 100);
+      }
+    }
   </script>
 </body>
 </html>
