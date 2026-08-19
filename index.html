@@ -1785,6 +1785,13 @@
         }
       }, randomDelay);
     });
+const funnyBtn = document.getElementById('funny-btn');
+const videoOverlay = document.getElementById('video-overlay');
+
+// ต้องแน่ใจว่าใส่ไว้ใน Event 'click' เท่านั้น ห้ามใส่ parentheses () ท้ายชื่อฟังก์ชันตอนผูก Event
+funnyBtn.addEventListener('click', function() {
+    showVideoPopup(); // ฟังก์ชันเปิดและเล่นวิดีโอจะทำงานก็ต่อเมื่อมีการคลิกปุ่มนี้เท่านั้น
+});
   </script>
 </body>
 </html>
